@@ -1,8 +1,10 @@
 "use client";
 
+import { useState } from "react";
 import { ShoppingCart, Store } from "lucide-react";
 import { useCart } from "@/components/cart/CartProvider";
 import QuantityStepper from "@/components/ui/QuantityStepper";
+import ReservePickupModal from "@/components/cart/ReservePickupModal";
 import { getCartLines, getCartTotals } from "@/lib/cart";
 import { currentStore } from "@/data/store";
 
@@ -10,6 +12,7 @@ export default function CartPage() {
   const { items, increment, decrement } = useCart();
   const lines = getCartLines(items);
   const totals = getCartTotals(lines);
+  const [isPickupModalOpen, setIsPickupModalOpen] = useState(false);
 
   return (
     <div className="mx-auto max-w-2xl space-y-4">
@@ -84,6 +87,7 @@ export default function CartPage() {
       <button
         type="button"
         disabled={lines.length === 0}
+        onClick={() => setIsPickupModalOpen(true)}
         className="w-full rounded-full bg-emerald-600 py-3 text-sm font-semibold text-white hover:bg-emerald-700 disabled:cursor-not-allowed disabled:bg-zinc-300"
       >
         Reserve for pickup
@@ -91,6 +95,11 @@ export default function CartPage() {
       <p className="text-center text-xs text-zinc-400">
         Demo only — this simulates a reservation, no order is actually placed.
       </p>
+
+      <ReservePickupModal
+        open={isPickupModalOpen}
+        onClose={() => setIsPickupModalOpen(false)}
+      />
     </div>
   );
 }

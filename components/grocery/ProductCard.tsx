@@ -1,22 +1,16 @@
 "use client";
 
 import { Star } from "lucide-react";
-import Badge, { type BadgeTone } from "@/components/ui/Badge";
+import Badge from "@/components/ui/Badge";
 import QuantityStepper from "@/components/ui/QuantityStepper";
 import { useCart } from "@/components/cart/CartProvider";
-import { promotions } from "@/data/promotions";
-import type { Product, PromotionType } from "@/types/grocery";
+import { getPromotionBadge } from "@/lib/promotions";
+import type { Product } from "@/types/grocery";
 
 const TINT_CLASSES: Record<Product["cardTint"], string> = {
   green: "bg-emerald-50",
   purple: "bg-violet-50",
   pink: "bg-rose-50",
-};
-
-const PROMOTION_TONE: Record<PromotionType, BadgeTone> = {
-  "percentage-discount": "deal",
-  "member-deal": "info",
-  "sell-by-deal": "deal",
 };
 
 function formatTag(tag: string) {
@@ -31,9 +25,7 @@ export default function ProductCard({ product }: { product: Product }) {
   const discountPercent = product.originalPrice
     ? Math.round(100 - (product.price / product.originalPrice) * 100)
     : null;
-  const promotion = product.promotion
-    ? promotions.find((p) => p.id === product.promotion)
-    : undefined;
+  const promotion = getPromotionBadge(product.promotion);
   const visibleTags = product.tags.slice(0, 3);
   const hiddenTagCount = product.tags.length - visibleTags.length;
 
@@ -53,7 +45,7 @@ export default function ProductCard({ product }: { product: Product }) {
       {promotion || product.tags.length > 0 ? (
         <div className="mt-2 flex flex-wrap gap-1">
           {promotion ? (
-            <Badge tone={PROMOTION_TONE[promotion.type]}>{promotion.label}</Badge>
+            <Badge tone={promotion.tone}>{promotion.label}</Badge>
           ) : null}
           {visibleTags.map((tag) => (
             <Badge key={tag} tone="neutral">

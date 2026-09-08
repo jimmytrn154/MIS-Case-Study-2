@@ -3,6 +3,8 @@
 import { useEffect, useRef, useState } from "react";
 import { Send } from "lucide-react";
 import ChatMessageBubble from "./ChatMessageBubble";
+import MealPlanGroup from "./MealPlanGroup";
+import { mealPlanResponseSchema, type Meal } from "@/types/meal-plan";
 import type { ChatMessage } from "@/types/chat";
 
 interface DisplayMessage {
@@ -10,6 +12,10 @@ interface DisplayMessage {
   role: "user" | "assistant";
   content: string;
   isError?: boolean;
+  mealPlan?: Meal[];
+  estimatedTotal?: number;
+  estimatedSavings?: number;
+  budget?: number;
 }
 
 const MAX_HISTORY_TURNS = 10;
@@ -63,15 +69,35 @@ export default function ChatInterface() {
         body: JSON.stringify({ message: trimmed, history }),
       });
 
-      const data = await res.json().catch(() => null);
+      const data: unknown = await res.json().catch(() => null);
 
-      if (!res.ok || !data?.reply) {
-        throw new Error(data?.error || "FreshWave Assistant is temporarily unavailable. Please try again.");
+      if (!res.ok) {
+        const errorMessage =
+          data && typeof data === "object" && "error" in data && typeof data.error === "string"
+            ? data.error
+            : "FreshWave Assistant is temporarily unavailable. Please try again.";
+        throw new Error(errorMessage);
+      }
+
+      // Never trust the shape of AI-derived JSON — validate before rendering.
+      const parsed = mealPlanResponseSchema.safeParse(data);
+      if (!parsed.success) {
+        throw new Error(
+          "FreshWave Assistant sent back something unexpected. Please try again.",
+        );
       }
 
       setMessages((prev) => [
         ...prev,
-        { id: makeId(), role: "assistant", content: data.reply },
+        {
+          id: makeId(),
+          role: "assistant",
+          content: parsed.data.message,
+          mealPlan: parsed.data.mealPlan,
+          estimatedTotal: parsed.data.estimatedTotal,
+          estimatedSavings: parsed.data.estimatedSavings,
+          budget: parsed.data.budget,
+        },
       ]);
     } catch (error) {
       setMessages((prev) => [
@@ -102,11 +128,17 @@ export default function ChatInterface() {
     <div className="flex h-[70vh] flex-col rounded-2xl border border-zinc-100 bg-white">
       <div className="flex-1 space-y-4 overflow-y-auto p-4">
         {messages.map((message) => (
-          <ChatMessageBubble
-            key={message.id}
-            message={message}
-            isError={message.isError}
-          />
+          <div key={message.id} className="space-y-3">
+            <ChatMessageBubble message={message} isError={message.isError} />
+            {message.mealPlan && message.mealPlan.length > 0 ? (
+              <MealPlanGroup
+                mealPlan={message.mealPlan}
+                estimatedTotal={message.estimatedTotal ?? 0}
+                estimatedSavings={message.estimatedSavings ?? 0}
+                budget={message.budget}
+              />
+            ) : null}
+          </div>
         ))}
         {isLoading ? (
           <div className="flex items-center gap-2 text-xs text-zinc-400">

@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { generateChatReply } from "@/lib/ai/gemini";
-import { buildSystemPrompt } from "@/lib/ai/system-prompt";
+import { generateAssistantReply } from "@/lib/ai/meal-plan";
 
 const chatMessageSchema = z.object({
   role: z.enum(["user", "assistant"]),
@@ -29,8 +28,8 @@ export async function POST(request: Request) {
   const { message, history } = parsed.data;
 
   try {
-    const reply = await generateChatReply(message, history, buildSystemPrompt());
-    return NextResponse.json({ reply });
+    const result = await generateAssistantReply(message, history);
+    return NextResponse.json(result);
   } catch (error) {
     const safeMessage =
       error instanceof Error
