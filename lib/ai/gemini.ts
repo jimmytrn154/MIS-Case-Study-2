@@ -1,9 +1,8 @@
 import "server-only";
 
 import { GoogleGenAI, type ContentListUnion } from "@google/genai";
+import { withModelFallback, getConfiguredModels, type ModelAttemptLog } from "./model-fallback";
 import type { ChatMessage } from "@/types/chat";
-
-const DEFAULT_MODEL = "gemini-2.5-flash";
 
 let cachedClient: GoogleGenAI | null = null;
 
@@ -18,11 +17,6 @@ function getClient(): GoogleGenAI {
   return cachedClient;
 }
 
-/** The model name is configurable via env rather than hardcoded; no fallback chain yet. */
-function getModel(): string {
-  return process.env.GEMINI_MODEL?.trim() || DEFAULT_MODEL;
-}
-
 function buildContents(message: string, history: ChatMessage[]): ContentListUnion {
   return [
     ...history.map((turn) => ({
@@ -31,6 +25,14 @@ function buildContents(message: string, history: ChatMessage[]): ContentListUnio
     })),
     { role: "user", parts: [{ text: message }] },
   ];
+}
+
+/** Logs model name, outcome, error category, and latency — never the API key or request/response content. */
+function logAttempt(log: ModelAttemptLog) {
+  const outcome = log.success ? "ok" : `failed (${log.category})`;
+  console.log(
+    `[FreshWave Assistant] model=${log.model} ${outcome} latency=${log.latencyMs}ms`,
+  );
 }
 
 function logSanitizedError(error: unknown) {
@@ -42,7 +44,8 @@ function logSanitizedError(error: unknown) {
 
 /**
  * Sends the current message plus limited prior turns to Gemini as plain
- * text, grounded by the given system instruction. Never throws the
+ * text, grounded by the given system instruction. Tries each configured
+ * model in order (see lib/ai/model-fallback.ts) and never throws the
  * underlying SDK error — callers only ever see a safe, generic message.
  */
 export async function generateChatReply(
@@ -51,19 +54,25 @@ export async function generateChatReply(
   systemInstruction: string,
 ): Promise<string> {
   const ai = getClient();
+  const contents = buildContents(message, history);
 
   try {
-    const response = await ai.models.generateContent({
-      model: getModel(),
-      contents: buildContents(message, history),
-      config: { systemInstruction },
-    });
-
-    const text = response.text;
-    if (!text) {
-      throw new Error("Empty response from Gemini.");
-    }
-    return text;
+    return await withModelFallback(
+      getConfiguredModels(),
+      async (model) => {
+        const response = await ai.models.generateContent({
+          model,
+          contents,
+          config: { systemInstruction },
+        });
+        const text = response.text;
+        if (!text) {
+          throw new Error("Empty response from Gemini.");
+        }
+        return text;
+      },
+      logAttempt,
+    );
   } catch (error) {
     logSanitizedError(error);
     throw new Error(
@@ -84,23 +93,29 @@ export async function generateStructuredReply(
   jsonSchema: unknown,
 ): Promise<string> {
   const ai = getClient();
+  const contents = buildContents(message, history);
 
   try {
-    const response = await ai.models.generateContent({
-      model: getModel(),
-      contents: buildContents(message, history),
-      config: {
-        systemInstruction,
-        responseMimeType: "application/json",
-        responseJsonSchema: jsonSchema,
+    return await withModelFallback(
+      getConfiguredModels(),
+      async (model) => {
+        const response = await ai.models.generateContent({
+          model,
+          contents,
+          config: {
+            systemInstruction,
+            responseMimeType: "application/json",
+            responseJsonSchema: jsonSchema,
+          },
+        });
+        const text = response.text;
+        if (!text) {
+          throw new Error("Empty structured response from Gemini.");
+        }
+        return text;
       },
-    });
-
-    const text = response.text;
-    if (!text) {
-      throw new Error("Empty structured response from Gemini.");
-    }
-    return text;
+      logAttempt,
+    );
   } catch (error) {
     logSanitizedError(error);
     throw new Error(
