@@ -1,5 +1,9 @@
+"use client";
+
 import { Star } from "lucide-react";
 import Badge, { type BadgeTone } from "@/components/ui/Badge";
+import QuantityStepper from "@/components/ui/QuantityStepper";
+import { useCart } from "@/components/cart/CartProvider";
 import { promotions } from "@/data/promotions";
 import type { Product, PromotionType } from "@/types/grocery";
 
@@ -20,6 +24,10 @@ function formatTag(tag: string) {
 }
 
 export default function ProductCard({ product }: { product: Product }) {
+  const { getQuantity, addItem, increment, decrement } = useCart();
+  const quantity = getQuantity(product.id);
+  const outOfStock = product.stock <= 0;
+
   const discountPercent = product.originalPrice
     ? Math.round(100 - (product.price / product.originalPrice) * 100)
     : null;
@@ -84,12 +92,24 @@ export default function ProductCard({ product }: { product: Product }) {
         In stock · {product.stock} on shelf
       </p>
 
-      <button
-        type="button"
-        className="mt-3 w-full rounded-full bg-emerald-600 py-2 text-sm font-semibold text-white transition-colors hover:bg-emerald-700"
-      >
-        Add to cart
-      </button>
+      {quantity > 0 ? (
+        <QuantityStepper
+          quantity={quantity}
+          onIncrement={() => increment(product.id)}
+          onDecrement={() => decrement(product.id)}
+          incrementDisabled={quantity >= product.stock}
+          className="mt-3"
+        />
+      ) : (
+        <button
+          type="button"
+          onClick={() => addItem(product.id)}
+          disabled={outOfStock}
+          className="mt-3 w-full rounded-full bg-emerald-600 py-2 text-sm font-semibold text-white transition-colors hover:bg-emerald-700 disabled:cursor-not-allowed disabled:bg-zinc-300"
+        >
+          {outOfStock ? "Out of stock" : "Add to cart"}
+        </button>
+      )}
     </div>
   );
 }

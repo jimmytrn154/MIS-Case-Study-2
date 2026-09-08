@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Home, ChefHat, Sparkles, ShoppingCart } from "lucide-react";
+import { useCart } from "@/components/cart/CartProvider";
 
 const ITEMS = [
   { href: "/", label: "Home", icon: Home },
@@ -13,6 +14,8 @@ const ITEMS = [
 
 export default function BottomNav() {
   const pathname = usePathname();
+  const { items } = useCart();
+  const cartCount = items.reduce((sum, item) => sum + item.quantity, 0);
 
   return (
     <nav className="fixed inset-x-0 bottom-0 z-20 flex items-stretch justify-around border-t border-zinc-200 bg-white/95 pb-[env(safe-area-inset-bottom)] backdrop-blur lg:hidden">
@@ -47,7 +50,14 @@ export default function BottomNav() {
               active ? "text-emerald-700" : "text-zinc-500"
             }`}
           >
-            <Icon className="h-5 w-5" strokeWidth={1.75} />
+            <span className="relative">
+              <Icon className="h-5 w-5" strokeWidth={1.75} />
+              {href === "/cart" && cartCount > 0 ? (
+                <span className="absolute -right-2 -top-1.5 flex h-3.5 min-w-3.5 items-center justify-center rounded-full bg-emerald-600 px-0.5 text-[9px] font-semibold text-white">
+                  {cartCount}
+                </span>
+              ) : null}
+            </span>
             {label}
           </Link>
         );

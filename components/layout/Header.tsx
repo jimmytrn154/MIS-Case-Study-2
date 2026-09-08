@@ -1,5 +1,6 @@
-import { Heart, ReceiptText, ShoppingCart, UserCircle, Waves } from "lucide-react";
+import { Heart, ReceiptText, UserCircle, Waves } from "lucide-react";
 import IconButton from "@/components/ui/IconButton";
+import CartIconButton from "@/components/cart/CartIconButton";
 import StoreSelector from "./StoreSelector";
 import SearchField from "./SearchField";
 
@@ -20,7 +21,7 @@ export default function Header() {
           <StoreSelector />
 
           <div className="flex items-center gap-1 lg:hidden">
-            <IconButton icon={ShoppingCart} label="Cart" badgeCount={3} />
+            <CartIconButton />
             <IconButton icon={UserCircle} label="Your account" />
           </div>
         </div>
@@ -30,7 +31,7 @@ export default function Header() {
         <div className="hidden items-center gap-1 lg:flex">
           <IconButton icon={Heart} label="Favorites" />
           <IconButton icon={ReceiptText} label="Orders" />
-          <IconButton icon={ShoppingCart} label="Cart" badgeCount={3} />
+          <CartIconButton />
           <IconButton icon={UserCircle} label="Your account" />
         </div>
       </div>
