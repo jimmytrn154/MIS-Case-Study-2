@@ -1,7 +1,7 @@
 import { Star } from "lucide-react";
 import Badge, { type BadgeTone } from "@/components/ui/Badge";
-import { currentStore } from "@/data/store";
-import type { Product, ProductBadge } from "@/types/grocery";
+import { promotions } from "@/data/promotions";
+import type { Product, PromotionType } from "@/types/grocery";
 
 const TINT_CLASSES: Record<Product["cardTint"], string> = {
   green: "bg-emerald-50",
@@ -9,18 +9,25 @@ const TINT_CLASSES: Record<Product["cardTint"], string> = {
   pink: "bg-rose-50",
 };
 
-const BADGE_META: Record<ProductBadge, { label: string; tone: BadgeTone }> = {
-  "in-stock-local": { label: `In stock at ${currentStore.name.replace("FreshWave ", "")}`, tone: "brand" },
-  "member-deal": { label: "Member deal", tone: "info" },
-  recommended: { label: "Recommended for your plan", tone: "brand" },
-  "bought-before": { label: "Bought before", tone: "neutral" },
-  "sell-by-deal": { label: "Sell-by deal", tone: "deal" },
+const PROMOTION_TONE: Record<PromotionType, BadgeTone> = {
+  "percentage-discount": "deal",
+  "member-deal": "info",
+  "sell-by-deal": "deal",
 };
 
+function formatTag(tag: string) {
+  return tag.replace(/-/g, " ");
+}
+
 export default function ProductCard({ product }: { product: Product }) {
-  const discountPercent = product.previousPrice
-    ? Math.round(100 - (product.price / product.previousPrice) * 100)
+  const discountPercent = product.originalPrice
+    ? Math.round(100 - (product.price / product.originalPrice) * 100)
     : null;
+  const promotion = product.promotion
+    ? promotions.find((p) => p.id === product.promotion)
+    : undefined;
+  const visibleTags = product.tags.slice(0, 3);
+  const hiddenTagCount = product.tags.length - visibleTags.length;
 
   return (
     <div className="flex flex-col rounded-2xl border border-zinc-100 bg-white p-3 shadow-sm">
@@ -32,16 +39,22 @@ export default function ProductCard({ product }: { product: Product }) {
             −{discountPercent}%
           </span>
         ) : null}
-        <span aria-hidden>{product.emoji}</span>
+        <span aria-hidden>{product.image}</span>
       </div>
 
-      {product.badges && product.badges.length > 0 ? (
+      {promotion || product.tags.length > 0 ? (
         <div className="mt-2 flex flex-wrap gap-1">
-          {product.badges.map((badge) => (
-            <Badge key={badge} tone={BADGE_META[badge].tone}>
-              {BADGE_META[badge].label}
+          {promotion ? (
+            <Badge tone={PROMOTION_TONE[promotion.type]}>{promotion.label}</Badge>
+          ) : null}
+          {visibleTags.map((tag) => (
+            <Badge key={tag} tone="neutral">
+              {formatTag(tag)}
             </Badge>
           ))}
+          {hiddenTagCount > 0 ? (
+            <Badge tone="neutral">+{hiddenTagCount}</Badge>
+          ) : null}
         </div>
       ) : null}
 
@@ -59,9 +72,9 @@ export default function ProductCard({ product }: { product: Product }) {
         <span className="text-lg font-semibold text-zinc-900">
           ${product.price.toFixed(2)}
         </span>
-        {product.previousPrice ? (
+        {product.originalPrice ? (
           <span className="text-sm text-zinc-400 line-through">
-            ${product.previousPrice.toFixed(2)}
+            ${product.originalPrice.toFixed(2)}
           </span>
         ) : null}
       </div>

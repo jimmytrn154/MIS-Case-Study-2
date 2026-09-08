@@ -1,13 +1,13 @@
-import { promos } from "@/data/promos";
-import type { Promo } from "@/types/grocery";
+import { promoBanners } from "@/data/promo-banners";
+import type { PromoBanner } from "@/types/grocery";
 
-const TONE_CLASSES: Record<Promo["tone"], string> = {
+const TONE_CLASSES: Record<PromoBanner["tone"], string> = {
   brand: "bg-gradient-to-br from-emerald-500 to-emerald-600 text-white",
   deal: "bg-gradient-to-br from-orange-500 to-red-500 text-white",
   pickup: "bg-gradient-to-br from-sky-500 to-blue-600 text-white",
 };
 
-const CTA_CLASSES: Record<Promo["tone"], string> = {
+const CTA_CLASSES: Record<PromoBanner["tone"], string> = {
   brand: "bg-white/15 hover:bg-white/25",
   deal: "bg-white/20 hover:bg-white/30",
   pickup: "bg-white/20 hover:bg-white/30",
@@ -16,7 +16,7 @@ const CTA_CLASSES: Record<Promo["tone"], string> = {
 export default function PromoRow() {
   return (
     <section className="grid gap-4 md:grid-cols-3">
-      {promos.map((promo) => (
+      {promoBanners.map((promo) => (
         <div
           key={promo.id}
           className={`flex flex-col justify-between rounded-2xl p-5 ${TONE_CLASSES[promo.tone]}`}

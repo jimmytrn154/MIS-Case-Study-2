@@ -1,6 +1,6 @@
-import type { Promo } from "@/types/grocery";
+import type { PromoBanner } from "@/types/grocery";
 
-export const promos: Promo[] = [
+export const promoBanners: PromoBanner[] = [
   {
     id: "shelf-online",
     title: "Everything on the shelf is now online",

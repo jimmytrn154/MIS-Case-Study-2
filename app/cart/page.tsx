@@ -25,7 +25,7 @@ export default function CartPage() {
                 aria-hidden
                 className="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-50 text-2xl"
               >
-                {line.product.emoji}
+                {line.product.image}
               </span>
               <div className="min-w-0 flex-1">
                 <p className="truncate text-sm font-medium text-zinc-900">

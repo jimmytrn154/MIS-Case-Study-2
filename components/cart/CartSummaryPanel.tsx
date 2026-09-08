@@ -26,7 +26,7 @@ export default function CartSummaryPanel() {
           >
             <span className="flex items-center gap-2">
               <span aria-hidden className="text-base">
-                {line.product.emoji}
+                {line.product.image}
               </span>
               {line.product.name} × {line.quantity}
             </span>

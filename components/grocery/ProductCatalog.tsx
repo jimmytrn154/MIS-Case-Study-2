@@ -17,7 +17,7 @@ export default function ProductCatalog({
   const filtered =
     selectedId === "all"
       ? products
-      : products.filter((product) => product.categoryId === selectedId);
+      : products.filter((product) => product.category === selectedId);
 
   return (
     <section className="space-y-4">
