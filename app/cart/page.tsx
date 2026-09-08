@@ -29,50 +29,63 @@ export default function CartPage() {
         <div className="rounded-2xl border border-zinc-100 bg-white p-4">
           <ul className="divide-y divide-zinc-100">
             {lines.map((line) => (
-              <li key={line.product.id} className="flex items-center gap-3 py-3">
-                <span
-                  aria-hidden
-                  className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-emerald-50 text-2xl"
-                >
-                  {line.product.image}
-                </span>
-                <div className="min-w-0 flex-1">
-                  <p className="truncate text-sm font-medium text-zinc-900">
-                    {line.product.name}
-                  </p>
-                  <p className="text-xs text-zinc-500">
-                    {line.product.unit} · ${line.unitPrice.toFixed(2)} each
-                  </p>
-                  {line.quantity >= line.product.stock ? (
-                    <p className="text-xs text-amber-600">Max available in stock</p>
-                  ) : null}
+              <li
+                key={line.product.id}
+                className="flex flex-wrap items-center gap-x-3 gap-y-2 py-3"
+              >
+                <div className="flex min-w-[200px] flex-1 items-center gap-3">
+                  <span
+                    aria-hidden
+                    className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-emerald-50 text-2xl"
+                  >
+                    {line.product.image}
+                  </span>
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate text-sm font-medium text-zinc-900">
+                      {line.product.name}
+                    </p>
+                    <p className="text-xs text-zinc-500">
+                      {line.product.unit} ·{" "}
+                      {line.unitOriginalPrice > line.unitPrice ? (
+                        <span className="text-zinc-400 line-through">
+                          ${line.unitOriginalPrice.toFixed(2)}
+                        </span>
+                      ) : null}{" "}
+                      ${line.unitPrice.toFixed(2)} each
+                    </p>
+                    {line.quantity >= line.product.stock ? (
+                      <p className="text-xs text-amber-600">Max available in stock</p>
+                    ) : null}
+                  </div>
                 </div>
-                <QuantityStepper
-                  quantity={line.quantity}
-                  onIncrement={() => increment(line.product.id)}
-                  onDecrement={() => decrement(line.product.id)}
-                  incrementDisabled={line.quantity >= line.product.stock}
-                />
-                <span className="w-16 shrink-0 text-right text-sm font-semibold text-zinc-900">
-                  ${line.subtotal.toFixed(2)}
-                </span>
+                <div className="ml-auto flex items-center gap-3">
+                  <QuantityStepper
+                    quantity={line.quantity}
+                    onIncrement={() => increment(line.product.id)}
+                    onDecrement={() => decrement(line.product.id)}
+                    incrementDisabled={line.quantity >= line.product.stock}
+                  />
+                  <span className="w-16 shrink-0 text-right text-sm font-semibold text-zinc-900">
+                    ${line.subtotal.toFixed(2)}
+                  </span>
+                </div>
               </li>
             ))}
           </ul>
 
           <div className="mt-3 space-y-1 border-t border-zinc-100 pt-3 text-sm">
             <div className="flex items-center justify-between text-zinc-500">
-              <span>Original subtotal</span>
+              <span>Regular total</span>
               <span>${totals.originalSubtotal.toFixed(2)}</span>
             </div>
             {totals.savings > 0 ? (
               <div className="flex items-center justify-between text-emerald-700">
-                <span>Promotion savings</span>
+                <span>Total savings</span>
                 <span>−${totals.savings.toFixed(2)}</span>
               </div>
             ) : null}
             <div className="flex items-center justify-between text-base font-semibold text-zinc-900">
-              <span>Total</span>
+              <span>FreshWave total</span>
               <span>${totals.subtotal.toFixed(2)}</span>
             </div>
           </div>

@@ -32,7 +32,7 @@ export default function ReservePickupModal({
         <button
           type="button"
           onClick={onClose}
-          className="mt-4 w-full rounded-full bg-emerald-600 py-2 text-sm font-semibold text-white hover:bg-emerald-700"
+          className="mt-4 w-full rounded-full bg-emerald-600 py-3 text-sm font-semibold text-white hover:bg-emerald-700"
         >
           Done
         </button>

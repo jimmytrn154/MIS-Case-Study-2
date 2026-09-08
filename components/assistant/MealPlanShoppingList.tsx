@@ -101,7 +101,7 @@ export default function MealPlanShoppingList({ mealPlan }: { mealPlan: Meal[] })
         <button
           type="button"
           onClick={handleAddToCart}
-          className="mt-3 w-full rounded-full bg-emerald-600 py-2 text-sm font-semibold text-white hover:bg-emerald-700"
+          className="mt-3 w-full rounded-full bg-emerald-600 py-3 text-sm font-semibold text-white hover:bg-emerald-700"
         >
           Add meal plan to cart
         </button>

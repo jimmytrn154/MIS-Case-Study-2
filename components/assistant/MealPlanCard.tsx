@@ -18,6 +18,10 @@ export default function MealPlanCard({ meal }: { meal: Meal }) {
       </div>
 
       <h3 className="mt-2 text-sm font-semibold text-zinc-900">{meal.name}</h3>
+      <p className="mt-0.5 flex items-center gap-1.5 text-xs text-emerald-700">
+        <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+        All ingredients in stock at Riverside
+      </p>
 
       <ul className="mt-3 space-y-2">
         {meal.ingredients.map((ingredient) => {

@@ -18,6 +18,7 @@ import RewardsSummary from "./RewardsSummary";
 const LINKED_ITEMS = [
   { href: "/", label: "Home", icon: Home },
   { href: "/meal-plan", label: "Recipes & Meal Plans", icon: ChefHat },
+  { href: "/account", label: "Your Account", icon: User },
 ];
 
 const SOON_ITEMS = [
@@ -25,7 +26,6 @@ const SOON_ITEMS = [
   { label: "Deals & Promotions", icon: Tag },
   { label: "Your Lists", icon: ListChecks },
   { label: "Orders", icon: Package },
-  { label: "Your Account", icon: User },
 ];
 
 export default function Sidebar() {

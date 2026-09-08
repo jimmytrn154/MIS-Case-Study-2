@@ -1,11 +1,6 @@
 import Link from "next/link";
-import { Sparkles, CalendarRange, BadgePercent, Salad } from "lucide-react";
-
-const QUICK_ACTIONS = [
-  { label: "Plan tonight's dinner", icon: Salad },
-  { label: "Build a week of lunches", icon: CalendarRange },
-  { label: "Find this week's best deals", icon: BadgePercent },
-];
+import { Sparkles } from "lucide-react";
+import QuickActions from "./QuickActions";
 
 export default function AssistantPanel() {
   return (
@@ -23,17 +18,8 @@ export default function AssistantPanel() {
         promotions — ready to become a cart.
       </p>
 
-      <div className="mt-3 space-y-1.5">
-        {QUICK_ACTIONS.map(({ label, icon: Icon }) => (
-          <Link
-            key={label}
-            href="/assistant"
-            className="flex items-center gap-2 rounded-xl border border-zinc-100 bg-white px-3 py-2 text-xs font-medium text-zinc-700 hover:border-emerald-200 hover:text-emerald-700"
-          >
-            <Icon className="h-4 w-4 shrink-0 text-emerald-600" strokeWidth={1.75} />
-            {label}
-          </Link>
-        ))}
+      <div className="mt-3">
+        <QuickActions variant="list" />
       </div>
 
       <Link

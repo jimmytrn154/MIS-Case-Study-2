@@ -21,7 +21,7 @@ export default function QuantityStepper({
         type="button"
         onClick={onDecrement}
         aria-label={quantity === 1 ? "Remove from cart" : "Decrease quantity"}
-        className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full hover:bg-emerald-700"
+        className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full hover:bg-emerald-700"
       >
         {quantity === 1 ? (
           <Trash2 className="h-4 w-4" strokeWidth={1.75} />
@@ -37,7 +37,7 @@ export default function QuantityStepper({
         onClick={onIncrement}
         disabled={incrementDisabled}
         aria-label="Increase quantity"
-        className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full hover:bg-emerald-700 disabled:opacity-40 disabled:hover:bg-transparent"
+        className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full hover:bg-emerald-700 disabled:opacity-40 disabled:hover:bg-transparent"
       >
         <Plus className="h-4 w-4" strokeWidth={2} />
       </button>

@@ -125,7 +125,7 @@ export default function ChatInterface() {
   }
 
   return (
-    <div className="flex h-[70vh] flex-col rounded-2xl border border-zinc-100 bg-white">
+    <div className="flex h-[65dvh] flex-col rounded-2xl border border-zinc-100 bg-white sm:h-[70dvh]">
       <div className="flex-1 space-y-4 overflow-y-auto p-4">
         {messages.map((message) => (
           <div key={message.id} className="space-y-3">
@@ -154,17 +154,17 @@ export default function ChatInterface() {
           value={input}
           onChange={(event) => setInput(event.target.value)}
           onKeyDown={handleKeyDown}
-          placeholder="Ask about meals, products, or promotions…"
+          placeholder="Ask about meals or deals…"
           rows={1}
           disabled={isLoading}
-          className="max-h-32 flex-1 resize-none rounded-xl border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm text-zinc-800 placeholder:text-zinc-400 focus:border-emerald-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-100 disabled:opacity-60"
+          className="max-h-32 min-h-11 flex-1 resize-none overflow-hidden rounded-xl border border-zinc-200 bg-zinc-50 px-3 py-2.5 text-sm text-zinc-800 placeholder:text-zinc-400 focus:border-emerald-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-100 disabled:opacity-60"
         />
         <button
           type="button"
           onClick={handleSend}
           disabled={isLoading || input.trim().length === 0}
           aria-label="Send message"
-          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-emerald-600 text-white transition-colors hover:bg-emerald-700 disabled:cursor-not-allowed disabled:bg-zinc-300"
+          className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-emerald-600 text-white transition-colors hover:bg-emerald-700 disabled:cursor-not-allowed disabled:bg-zinc-300"
         >
           <Send className="h-4 w-4" strokeWidth={2} />
         </button>

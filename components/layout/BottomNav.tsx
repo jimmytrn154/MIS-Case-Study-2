@@ -2,14 +2,15 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, ChefHat, Sparkles, ShoppingCart } from "lucide-react";
+import { Home, ChefHat, Sparkles, ShoppingCart, UserCircle } from "lucide-react";
 import { useCart } from "@/components/cart/CartProvider";
 
 const ITEMS = [
   { href: "/", label: "Home", icon: Home },
-  { href: "/meal-plan", label: "Meal Plan", icon: ChefHat },
+  { href: "/meal-plan", label: "Meals", icon: ChefHat },
   { href: "/assistant", label: "Assistant", icon: Sparkles },
   { href: "/cart", label: "Cart", icon: ShoppingCart },
+  { href: "/account", label: "Account", icon: UserCircle },
 ];
 
 export default function BottomNav() {
@@ -28,7 +29,7 @@ export default function BottomNav() {
             <Link
               key={href}
               href={href}
-              className="flex flex-1 flex-col items-center justify-end gap-1 py-2 text-xs font-medium text-emerald-700"
+              className="flex flex-1 flex-col items-center justify-end gap-1 py-2 text-[11px] font-medium text-emerald-700"
             >
               <span
                 className={`-mt-6 flex h-12 w-12 items-center justify-center rounded-full shadow-lg shadow-emerald-600/30 ${
@@ -46,7 +47,7 @@ export default function BottomNav() {
           <Link
             key={href}
             href={href}
-            className={`flex flex-1 flex-col items-center justify-center gap-1 py-3 text-xs font-medium ${
+            className={`flex flex-1 flex-col items-center justify-center gap-1 py-3 text-[11px] font-medium ${
               active ? "text-emerald-700" : "text-zinc-500"
             }`}
           >

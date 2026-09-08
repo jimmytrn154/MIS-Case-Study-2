@@ -97,7 +97,7 @@ export default function ProductCard({ product }: { product: Product }) {
           type="button"
           onClick={() => addItem(product.id)}
           disabled={outOfStock}
-          className="mt-3 w-full rounded-full bg-emerald-600 py-2 text-sm font-semibold text-white transition-colors hover:bg-emerald-700 disabled:cursor-not-allowed disabled:bg-zinc-300"
+          className="mt-3 flex h-11 w-full items-center justify-center rounded-full bg-emerald-600 text-sm font-semibold text-white transition-colors hover:bg-emerald-700 disabled:cursor-not-allowed disabled:bg-zinc-300"
         >
           {outOfStock ? "Out of stock" : "Add to cart"}
         </button>
