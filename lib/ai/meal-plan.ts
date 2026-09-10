@@ -3,6 +3,7 @@ import "server-only";
 import { z } from "zod";
 import { products } from "@/data/products";
 import { getItemSubtotal, getItemSavings } from "@/lib/cart";
+import { normalizeQuantity } from "@/lib/quantity";
 import { generateChatReply, generateStructuredReply } from "./gemini";
 import { buildSystemPrompt, buildMealPlanSystemPrompt } from "./system-prompt";
 import {
@@ -29,7 +30,9 @@ const rawIngredientSchema = z.object({
   quantity: z
     .number()
     .min(0.1)
-    .describe("How many of this product's listed unit to buy."),
+    .describe(
+      "How many of this product's listed unit to buy. Only 'per lb' products may be fractional (e.g. 1.5); every other unit (each, dozen, a bag, a jar, ...) is a whole package or piece — use a whole number like 1 or 2.",
+    ),
 });
 
 const rawMealSchema = z.object({
@@ -74,7 +77,10 @@ function resolveIngredient(
   const product = products.find((p) => p.id === raw.productId);
   if (!product) return null;
 
-  const quantity = Math.min(raw.quantity, product.stock);
+  // The model's own arithmetic isn't trusted for units either — snap to
+  // something actually purchasable (whole packages, or quarter-pound steps
+  // for weight-based products) before ever storing or pricing it.
+  const quantity = Math.min(normalizeQuantity(raw.quantity, product.unit), product.stock);
   if (quantity <= 0) return null;
 
   return {

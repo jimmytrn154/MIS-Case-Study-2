@@ -1,4 +1,5 @@
 import { Minus, Plus, Trash2 } from "lucide-react";
+import { formatQuantity } from "@/lib/format";
 
 export default function QuantityStepper({
   quantity,
@@ -30,7 +31,7 @@ export default function QuantityStepper({
         )}
       </button>
       <span className="min-w-6 text-center text-sm font-semibold">
-        {quantity}
+        {formatQuantity(quantity)}
       </span>
       <button
         type="button"
