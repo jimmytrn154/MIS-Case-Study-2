@@ -9,7 +9,6 @@ import {
   type ReactNode,
 } from "react";
 import { products } from "@/data/products";
-import { sampleCartItems } from "@/data/cart";
 import { normalizeQuantity } from "@/lib/quantity";
 import type { CartItem } from "@/types/grocery";
 
@@ -50,7 +49,7 @@ function sanitizeItems(items: CartItem[]): CartItem[] {
 }
 
 export function CartProvider({ children }: { children: ReactNode }) {
-  const [items, setItems] = useState<CartItem[]>(sampleCartItems);
+  const [items, setItems] = useState<CartItem[]>([]);
   const [hydrated, setHydrated] = useState(false);
 
   // Hydrate from localStorage after mount so server and first client render match.
