@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
 import { ListPlus, CheckCircle2 } from "lucide-react";
 import { useCart } from "@/components/cart/CartProvider";
@@ -8,9 +7,16 @@ import { buildShoppingList, addShoppingListToCart } from "@/lib/meal-plan-cart";
 import { formatQuantity } from "@/lib/format";
 import type { Meal } from "@/types/meal-plan";
 
-export default function MealPlanShoppingList({ mealPlan }: { mealPlan: Meal[] }) {
+export default function MealPlanShoppingList({
+  mealPlan,
+  added,
+  onAdded,
+}: {
+  mealPlan: Meal[];
+  added: boolean;
+  onAdded: () => void;
+}) {
   const { items, addItem } = useCart();
-  const [added, setAdded] = useState(false);
 
   const shoppingList = buildShoppingList(mealPlan, items);
   const { lines, regularTotal, freshWaveTotal, totalSavings } = shoppingList;
@@ -19,7 +25,7 @@ export default function MealPlanShoppingList({ mealPlan }: { mealPlan: Meal[] })
 
   function handleAddToCart() {
     addShoppingListToCart(lines, addItem);
-    setAdded(true);
+    onAdded();
   }
 
   return (

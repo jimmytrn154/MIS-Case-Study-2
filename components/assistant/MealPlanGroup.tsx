@@ -8,11 +8,15 @@ export default function MealPlanGroup({
   estimatedTotal,
   estimatedSavings,
   budget,
+  addedToCart,
+  onAddedToCart,
 }: {
   mealPlan: Meal[];
   estimatedTotal: number;
   estimatedSavings: number;
   budget?: number;
+  addedToCart: boolean;
+  onAddedToCart: () => void;
 }) {
   if (mealPlan.length === 0) return null;
 
@@ -28,7 +32,11 @@ export default function MealPlanGroup({
           <MealPlanCard key={`${meal.day}-${index}`} meal={meal} />
         ))}
       </div>
-      <MealPlanShoppingList mealPlan={mealPlan} />
+      <MealPlanShoppingList
+        mealPlan={mealPlan}
+        added={addedToCart}
+        onAdded={onAddedToCart}
+      />
     </div>
   );
 }

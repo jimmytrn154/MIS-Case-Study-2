@@ -16,15 +16,17 @@ interface DisplayMessage {
   estimatedTotal?: number;
   estimatedSavings?: number;
   budget?: number;
+  addedToCart?: boolean;
 }
 
 const MAX_HISTORY_TURNS = 10;
+const STORAGE_KEY = "freshwave-chat";
 
 const GREETING: DisplayMessage = {
   id: "greeting",
   role: "assistant",
   content:
-    "Hi, I'm the FreshWave Assistant! Tell me your household size, budget, and any dietary needs, and I'll help you plan meals from what's in stock at Riverside.",
+    "Hi, I'm the FreshWave Assistant! Tell me your household size, budget, and any dietary needs, and I'll help you plan meals from what's in stock at Riverside. For example, you can say: 'I have a family of 4, a budget of $100, and we need vegan meals.'",
 };
 
 function makeId(): string {
@@ -37,7 +39,32 @@ export default function ChatInterface() {
   const [messages, setMessages] = useState<DisplayMessage[]>([GREETING]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [hydrated, setHydrated] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
+
+  // Hydrate from localStorage after mount so server and first client render
+  // match — same pattern as CartProvider, so returning to /assistant (or a
+  // full reload) restores the conversation instead of resetting to the
+  // greeting.
+  useEffect(() => {
+    try {
+      const raw = window.localStorage.getItem(STORAGE_KEY);
+      const parsed: unknown = raw ? JSON.parse(raw) : null;
+      if (Array.isArray(parsed) && parsed.length > 0) setMessages(parsed);
+    } catch {
+      // Ignore unavailable/corrupt storage — keep the default greeting.
+    }
+    setHydrated(true);
+  }, []);
+
+  useEffect(() => {
+    if (!hydrated) return;
+    try {
+      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(messages));
+    } catch {
+      // Storage unavailable (private mode, quota) — chat still works in-memory.
+    }
+  }, [messages, hydrated]);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -117,6 +144,12 @@ export default function ChatInterface() {
     }
   }
 
+  function markAddedToCart(messageId: string) {
+    setMessages((prev) =>
+      prev.map((m) => (m.id === messageId ? { ...m, addedToCart: true } : m)),
+    );
+  }
+
   function handleKeyDown(event: React.KeyboardEvent<HTMLTextAreaElement>) {
     if (event.key === "Enter" && !event.shiftKey) {
       event.preventDefault();
@@ -136,6 +169,8 @@ export default function ChatInterface() {
                 estimatedTotal={message.estimatedTotal ?? 0}
                 estimatedSavings={message.estimatedSavings ?? 0}
                 budget={message.budget}
+                addedToCart={message.addedToCart ?? false}
+                onAddedToCart={() => markAddedToCart(message.id)}
               />
             ) : null}
           </div>
