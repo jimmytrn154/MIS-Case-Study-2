@@ -2,12 +2,12 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, ChefHat, Sparkles, ShoppingCart, UserCircle } from "lucide-react";
+import { Home, Refrigerator, Sparkles, ShoppingCart, UserCircle } from "lucide-react";
 import { useCart } from "@/components/cart/CartProvider";
 
 const ITEMS = [
   { href: "/", label: "Home", icon: Home },
-  { href: "/meal-plan", label: "Meals", icon: ChefHat },
+  { href: "/my-kitchen/smart-fridge", label: "Kitchen", icon: Refrigerator },
   { href: "/assistant", label: "Assistant", icon: Sparkles },
   { href: "/cart", label: "Cart", icon: ShoppingCart },
   { href: "/account", label: "Account", icon: UserCircle },

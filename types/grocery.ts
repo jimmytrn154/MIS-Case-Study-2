@@ -1,3 +1,5 @@
+import type { Coordinates, StoreLocation } from "@/types/intelligence";
+
 export type CardTint = "green" | "purple" | "pink";
 
 export type DietaryTag =
@@ -37,6 +39,13 @@ export interface Product {
   cardTint: CardTint;
   rating: number;
   reviewCount: number;
+  storeLocation: StoreLocation;
+  isPerishable?: boolean;
+  expirationDate?: string;
+  sellByDate?: string;
+  farmId?: string;
+  harvestDate?: string;
+  productionDate?: string;
 }
 
 export interface Store {
@@ -44,6 +53,7 @@ export interface Store {
   name: string;
   address: string;
   hoursLabel: string;
+  coordinates: Coordinates;
 }
 
 export interface CustomerProfile {
@@ -71,4 +81,5 @@ export interface PromoBanner {
   description: string;
   ctaLabel: string;
   tone: "brand" | "deal" | "pickup";
+  href?: string;
 }

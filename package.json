@@ -6,7 +6,13 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "typecheck": "tsc --noEmit",
+    "test:data": "node scripts/test-data-integrity.ts",
+    "test:anti-waste": "node scripts/test-anti-waste.ts",
+    "test:smart-fridge": "node scripts/test-restock-prediction.ts",
+    "test:traceability": "node scripts/test-traceability.ts",
+    "test:routing": "node scripts/test-store-routing.ts"
   },
   "dependencies": {
     "@google/genai": "^2.21.0",

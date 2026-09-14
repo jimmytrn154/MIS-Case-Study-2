@@ -15,6 +15,11 @@ export const products: Product[] = [
     cardTint: "green",
     rating: 4.5,
     reviewCount: 210,
+    storeLocation: { aisleId: "produce", shelfZone: "P2" },
+    isPerishable: true,
+    sellByDate: "2026-09-15",
+    farmId: "sunrise-fields",
+    harvestDate: "2026-09-12",
   },
   {
     id: "spinach",
@@ -29,6 +34,11 @@ export const products: Product[] = [
     cardTint: "green",
     rating: 4.6,
     reviewCount: 188,
+    storeLocation: { aisleId: "produce", shelfZone: "P2" },
+    isPerishable: true,
+    sellByDate: "2026-09-17",
+    farmId: "sunrise-fields",
+    harvestDate: "2026-09-12",
   },
   {
     id: "roma-tomatoes",
@@ -42,6 +52,9 @@ export const products: Product[] = [
     cardTint: "pink",
     rating: 4.4,
     reviewCount: 132,
+    storeLocation: { aisleId: "produce", shelfZone: "P1" },
+    isPerishable: true,
+    sellByDate: "2026-09-20",
   },
   {
     id: "carrots",
@@ -57,6 +70,9 @@ export const products: Product[] = [
     cardTint: "purple",
     rating: 4.7,
     reviewCount: 305,
+    storeLocation: { aisleId: "produce", shelfZone: "P2" },
+    isPerishable: true,
+    sellByDate: "2026-09-23",
   },
   {
     id: "honeycrisp-apples",
@@ -72,6 +88,11 @@ export const products: Product[] = [
     cardTint: "pink",
     rating: 4.8,
     reviewCount: 540,
+    storeLocation: { aisleId: "produce", shelfZone: "P1" },
+    isPerishable: true,
+    sellByDate: "2026-09-21",
+    farmId: "green-valley-orchard",
+    harvestDate: "2026-09-10",
   },
   {
     id: "yukon-gold-potatoes",
@@ -85,6 +106,9 @@ export const products: Product[] = [
     cardTint: "green",
     rating: 4.6,
     reviewCount: 720,
+    storeLocation: { aisleId: "produce", shelfZone: "P3" },
+    isPerishable: true,
+    sellByDate: "2026-10-02",
   },
   {
     id: "bell-peppers",
@@ -98,6 +122,47 @@ export const products: Product[] = [
     cardTint: "purple",
     rating: 4.5,
     reviewCount: 96,
+    storeLocation: { aisleId: "produce", shelfZone: "P2" },
+    isPerishable: true,
+    sellByDate: "2026-09-18",
+    farmId: "sunrise-fields",
+    harvestDate: "2026-09-11",
+  },
+  {
+    id: "bananas",
+    name: "Bananas",
+    category: "produce",
+    description: "Ripe yellow bananas, sold by the bunch.",
+    unit: "bunch",
+    price: 1.69,
+    stock: 72,
+    tags: ["vegan", "vegetarian", "gluten-free", "dairy-free", "budget-friendly"],
+    image: "🍌",
+    cardTint: "green",
+    rating: 4.6,
+    reviewCount: 418,
+    storeLocation: { aisleId: "produce", shelfZone: "P1" },
+    isPerishable: true,
+    sellByDate: "2026-09-19",
+  },
+  {
+    id: "fresh-strawberries",
+    name: "Fresh strawberries",
+    category: "produce",
+    description: "Locally grown strawberries in a recyclable punnet.",
+    unit: "1 lb punnet",
+    price: 4.49,
+    stock: 28,
+    tags: ["vegan", "vegetarian", "gluten-free", "dairy-free"],
+    image: "🍓",
+    cardTint: "pink",
+    rating: 4.7,
+    reviewCount: 236,
+    storeLocation: { aisleId: "produce", shelfZone: "P1" },
+    isPerishable: true,
+    sellByDate: "2026-09-16",
+    farmId: "riverbend-berry-farm",
+    harvestDate: "2026-09-12",
   },
 
   // Dairy & eggs
@@ -115,6 +180,11 @@ export const products: Product[] = [
     cardTint: "green",
     rating: 4.7,
     reviewCount: 930,
+    storeLocation: { aisleId: "dairy-eggs", shelfZone: "D2" },
+    isPerishable: true,
+    expirationDate: "2026-09-20",
+    farmId: "meadowbrook-farm",
+    productionDate: "2026-09-08",
   },
   {
     id: "whole-milk",
@@ -130,6 +200,9 @@ export const products: Product[] = [
     cardTint: "purple",
     rating: 4.7,
     reviewCount: 880,
+    storeLocation: { aisleId: "dairy-eggs", shelfZone: "D1" },
+    isPerishable: true,
+    expirationDate: "2026-09-17",
   },
   {
     id: "unsalted-butter",
@@ -143,6 +216,9 @@ export const products: Product[] = [
     cardTint: "pink",
     rating: 4.8,
     reviewCount: 402,
+    storeLocation: { aisleId: "dairy-eggs", shelfZone: "D3" },
+    isPerishable: true,
+    expirationDate: "2026-10-18",
   },
   {
     id: "greek-yogurt",
@@ -156,6 +232,9 @@ export const products: Product[] = [
     cardTint: "green",
     rating: 4.6,
     reviewCount: 264,
+    storeLocation: { aisleId: "dairy-eggs", shelfZone: "D1" },
+    isPerishable: true,
+    expirationDate: "2026-09-22",
   },
   {
     id: "cheddar-cheese",
@@ -169,6 +248,9 @@ export const products: Product[] = [
     cardTint: "purple",
     rating: 4.7,
     reviewCount: 175,
+    storeLocation: { aisleId: "dairy-eggs", shelfZone: "D3" },
+    isPerishable: true,
+    expirationDate: "2026-10-05",
   },
 
   // Meat & seafood
@@ -187,6 +269,11 @@ export const products: Product[] = [
     cardTint: "purple",
     rating: 4.6,
     reviewCount: 510,
+    storeLocation: { aisleId: "meat-seafood", shelfZone: "M2" },
+    isPerishable: true,
+    sellByDate: "2026-09-15",
+    farmId: "meadowbrook-farm",
+    productionDate: "2026-09-11",
   },
   {
     id: "ground-beef",
@@ -200,6 +287,9 @@ export const products: Product[] = [
     cardTint: "pink",
     rating: 4.5,
     reviewCount: 220,
+    storeLocation: { aisleId: "meat-seafood", shelfZone: "M1" },
+    isPerishable: true,
+    sellByDate: "2026-09-18",
   },
   {
     id: "salmon-fillet",
@@ -215,6 +305,9 @@ export const products: Product[] = [
     cardTint: "green",
     rating: 4.8,
     reviewCount: 190,
+    storeLocation: { aisleId: "meat-seafood", shelfZone: "M3" },
+    isPerishable: true,
+    sellByDate: "2026-09-16",
   },
   {
     id: "pork-tenderloin",
@@ -228,6 +321,9 @@ export const products: Product[] = [
     cardTint: "purple",
     rating: 4.4,
     reviewCount: 88,
+    storeLocation: { aisleId: "meat-seafood", shelfZone: "M2" },
+    isPerishable: true,
+    sellByDate: "2026-09-19",
   },
   {
     id: "bacon",
@@ -241,6 +337,9 @@ export const products: Product[] = [
     cardTint: "pink",
     rating: 4.7,
     reviewCount: 340,
+    storeLocation: { aisleId: "meat-seafood", shelfZone: "M1" },
+    isPerishable: true,
+    expirationDate: "2026-09-28",
   },
   {
     id: "shrimp",
@@ -256,6 +355,9 @@ export const products: Product[] = [
     cardTint: "green",
     rating: 4.6,
     reviewCount: 150,
+    storeLocation: { aisleId: "meat-seafood", shelfZone: "M3" },
+    isPerishable: true,
+    sellByDate: "2026-09-21",
   },
 
   // Bakery
@@ -273,6 +375,9 @@ export const products: Product[] = [
     cardTint: "purple",
     rating: 4.8,
     reviewCount: 455,
+    storeLocation: { aisleId: "bakery", shelfZone: "BK1" },
+    isPerishable: true,
+    sellByDate: "2026-09-14",
   },
   {
     id: "whole-wheat-bread",
@@ -286,6 +391,9 @@ export const products: Product[] = [
     cardTint: "green",
     rating: 4.5,
     reviewCount: 260,
+    storeLocation: { aisleId: "bakery", shelfZone: "BK2" },
+    isPerishable: true,
+    sellByDate: "2026-09-18",
   },
   {
     id: "bagels",
@@ -299,6 +407,9 @@ export const products: Product[] = [
     cardTint: "pink",
     rating: 4.6,
     reviewCount: 142,
+    storeLocation: { aisleId: "bakery", shelfZone: "BK2" },
+    isPerishable: true,
+    sellByDate: "2026-09-17",
   },
   {
     id: "sourdough-boule",
@@ -312,6 +423,9 @@ export const products: Product[] = [
     cardTint: "purple",
     rating: 4.7,
     reviewCount: 98,
+    storeLocation: { aisleId: "bakery", shelfZone: "BK1" },
+    isPerishable: true,
+    sellByDate: "2026-09-16",
   },
 
   // Pantry
@@ -327,6 +441,7 @@ export const products: Product[] = [
     cardTint: "green",
     rating: 4.6,
     reviewCount: 180,
+    storeLocation: { aisleId: "pantry", shelfZone: "A4" },
   },
   {
     id: "black-beans",
@@ -340,6 +455,7 @@ export const products: Product[] = [
     cardTint: "purple",
     rating: 4.7,
     reviewCount: 310,
+    storeLocation: { aisleId: "pantry", shelfZone: "A3" },
   },
   {
     id: "olive-oil",
@@ -355,6 +471,7 @@ export const products: Product[] = [
     cardTint: "pink",
     rating: 4.8,
     reviewCount: 245,
+    storeLocation: { aisleId: "pantry", shelfZone: "A5" },
   },
   {
     id: "pasta",
@@ -368,6 +485,7 @@ export const products: Product[] = [
     cardTint: "green",
     rating: 4.5,
     reviewCount: 205,
+    storeLocation: { aisleId: "pantry", shelfZone: "A4" },
   },
   {
     id: "peanut-butter",
@@ -381,6 +499,7 @@ export const products: Product[] = [
     cardTint: "purple",
     rating: 4.7,
     reviewCount: 288,
+    storeLocation: { aisleId: "pantry", shelfZone: "A2" },
   },
   {
     id: "quinoa",
@@ -394,6 +513,7 @@ export const products: Product[] = [
     cardTint: "pink",
     rating: 4.5,
     reviewCount: 112,
+    storeLocation: { aisleId: "pantry", shelfZone: "A4" },
   },
 
   // Drinks
@@ -409,6 +529,7 @@ export const products: Product[] = [
     cardTint: "purple",
     rating: 4.6,
     reviewCount: 612,
+    storeLocation: { aisleId: "drinks", shelfZone: "B2" },
   },
   {
     id: "orange-juice",
@@ -424,6 +545,9 @@ export const products: Product[] = [
     cardTint: "green",
     rating: 4.5,
     reviewCount: 165,
+    storeLocation: { aisleId: "drinks", shelfZone: "B1" },
+    isPerishable: true,
+    expirationDate: "2026-10-01",
   },
   {
     id: "ground-coffee",
@@ -437,6 +561,7 @@ export const products: Product[] = [
     cardTint: "purple",
     rating: 4.8,
     reviewCount: 320,
+    storeLocation: { aisleId: "drinks", shelfZone: "B3" },
   },
   {
     id: "sparkling-water",
@@ -450,6 +575,7 @@ export const products: Product[] = [
     cardTint: "pink",
     rating: 4.6,
     reviewCount: 140,
+    storeLocation: { aisleId: "drinks", shelfZone: "B2" },
   },
 
   // Frozen
@@ -465,6 +591,7 @@ export const products: Product[] = [
     cardTint: "green",
     rating: 4.4,
     reviewCount: 98,
+    storeLocation: { aisleId: "frozen", shelfZone: "F1" },
   },
   {
     id: "frozen-berries",
@@ -478,6 +605,7 @@ export const products: Product[] = [
     cardTint: "purple",
     rating: 4.7,
     reviewCount: 176,
+    storeLocation: { aisleId: "frozen", shelfZone: "F1" },
   },
   {
     id: "frozen-pizza",
@@ -493,6 +621,7 @@ export const products: Product[] = [
     cardTint: "pink",
     rating: 4.5,
     reviewCount: 210,
+    storeLocation: { aisleId: "frozen", shelfZone: "F2" },
   },
   {
     id: "vanilla-ice-cream",
@@ -506,6 +635,7 @@ export const products: Product[] = [
     cardTint: "green",
     rating: 4.6,
     reviewCount: 154,
+    storeLocation: { aisleId: "frozen", shelfZone: "F2" },
   },
 
   // Household
@@ -521,6 +651,7 @@ export const products: Product[] = [
     cardTint: "purple",
     rating: 4.5,
     reviewCount: 210,
+    storeLocation: { aisleId: "household", shelfZone: "H3" },
   },
   {
     id: "dish-soap",
@@ -534,6 +665,7 @@ export const products: Product[] = [
     cardTint: "pink",
     rating: 4.4,
     reviewCount: 130,
+    storeLocation: { aisleId: "household", shelfZone: "H1" },
   },
   {
     id: "laundry-detergent",
@@ -549,6 +681,7 @@ export const products: Product[] = [
     cardTint: "green",
     rating: 4.6,
     reviewCount: 175,
+    storeLocation: { aisleId: "household", shelfZone: "H2" },
   },
   {
     id: "trash-bags",
@@ -562,5 +695,6 @@ export const products: Product[] = [
     cardTint: "purple",
     rating: 4.3,
     reviewCount: 90,
+    storeLocation: { aisleId: "household", shelfZone: "H3" },
   },
 ];

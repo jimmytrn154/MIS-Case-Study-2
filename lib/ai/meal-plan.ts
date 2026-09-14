@@ -2,7 +2,7 @@ import "server-only";
 
 import { z } from "zod";
 import { products } from "@/data/products";
-import { getItemSubtotal, getItemSavings } from "@/lib/cart";
+import { getEffectivePrice, getItemSubtotal, getItemSavings } from "@/lib/cart";
 import { normalizeQuantity } from "@/lib/quantity";
 import { generateChatReply, generateStructuredReply } from "./gemini";
 import { buildSystemPrompt, buildMealPlanSystemPrompt } from "./system-prompt";
@@ -88,7 +88,7 @@ function resolveIngredient(
     productName: product.name,
     unit: product.unit,
     quantity,
-    unitPrice: product.price,
+    unitPrice: getEffectivePrice(product),
     lineCost: getItemSubtotal(product, quantity),
     promotion: product.promotion,
   };

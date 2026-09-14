@@ -1,4 +1,5 @@
 import { products } from "@/data/products";
+import { getAntiWasteOfferForProduct } from "@/lib/anti-waste";
 import type { CartItem, Product } from "@/types/grocery";
 
 export interface CartLine {
@@ -18,9 +19,9 @@ export interface CartTotals {
   savings: number;
 }
 
-/** The price the customer actually pays — promotions are already baked into product.price. */
+/** The price the customer actually pays, including an active anti-waste markdown. */
 export function getEffectivePrice(product: Product): number {
-  return product.price;
+  return getAntiWasteOfferForProduct(product.id)?.discountedPrice ?? product.price;
 }
 
 /** The pre-discount price, falling back to the current price when there is no promotion. */

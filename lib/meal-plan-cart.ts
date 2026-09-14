@@ -1,5 +1,10 @@
 import { products } from "@/data/products";
-import { getItemSubtotal, getItemOriginalSubtotal, getItemSavings } from "@/lib/cart";
+import {
+  getEffectivePrice,
+  getItemSubtotal,
+  getItemOriginalSubtotal,
+  getItemSavings,
+} from "@/lib/cart";
 import type { CartItem, Product } from "@/types/grocery";
 import type { Meal } from "@/types/meal-plan";
 
@@ -69,7 +74,7 @@ export function buildShoppingList(
       product,
       requestedQuantity,
       quantity,
-      unitPrice: product.price,
+      unitPrice: getEffectivePrice(product),
       originalUnitPrice: product.originalPrice ?? product.price,
       lineCost: getItemSubtotal(product, quantity),
       originalLineCost: getItemOriginalSubtotal(product, quantity),

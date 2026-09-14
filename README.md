@@ -6,6 +6,55 @@ The prototype demonstrates how a physical-store grocery chain could combine its 
 
 This is a polished course prototype, not production software — there is no real backend, database, authentication, or payment processing.
 
+## FreshWave Intelligence Layer
+
+The repository now includes the shared data foundation for five connected prototype capabilities:
+
+- smart anti-waste promotions based on store freshness data and purchase history
+- predictive Smart Fridge restock recommendations
+- local product traceability
+- an aisle-based in-store shopping navigator
+- a Virtual Pantry with freshness and stock awareness
+
+These capabilities share the existing product catalog through stable `productId` references rather than maintaining isolated mock datasets. Product records now support store aisle and shelf locations plus optional, category-appropriate freshness and provenance fields. Supporting typed datasets cover Sarah's purchase history and pantry, fictional local farms, and the FreshWave Riverside floor plan.
+
+The shared data-model, Smart Anti-Waste Promotions, Smart Fridge, Transparent Local Traceability, and In-Store Navigator milestones are implemented. Virtual Pantry workflows and expanded Gemini context will be added in subsequent milestones.
+
+### Smart Anti-Waste Promotions
+
+Open `/deals/anti-waste` to see perishable Riverside products within their three-day freshness window. The application—not Gemini—calculates markdowns using a fixed ladder: 15% with three days remaining, 25% with two days, 35% with one day, and 40% on the freshness date. Expired products and products with more than three days remaining are excluded.
+
+Sarah's purchase history also affects ordering without changing eligibility or prices. Products purchased at least three times are labeled and ranked first. Adding an offer to the cart preserves its computed anti-waste price throughout cart and meal-plan pricing.
+
+### Smart Fridge predictive restocking
+
+Open `/my-kitchen/smart-fridge` to see products Sarah is likely to need within seven days. For each repeatedly purchased product, application code averages the days between purchases, adds that interval to the most recent purchase date, and compares the prediction with the fixed demo date. Confidence is derived from the number of observations and how much the historical intervals vary; it is not presented as a trained AI forecast.
+
+Sarah can select predictions and prepare a proposed restock cart. The proposal supports removal and quantity changes, and the shared cart is modified only after explicit confirmation. Pantry-aware prediction adjustments are intentionally deferred until the Virtual Pantry and cross-feature integration milestones.
+
+### Transparent Local Traceability
+
+Traceable products display an origin badge in the catalog and link to `/products/[id]`. Their product detail pages resolve farm, region, harvest or production date, and approximate distance from the shared product and farm records. Honeycrisp apples, for example, show a September 10 harvest at the fictional Green Valley Orchard, 18 km from FreshWave Riverside.
+
+The farm-to-store visualization is a responsive SVG schematic derived from the stored coordinates. It requires no map service, paid API, or new dependency and is explicitly labeled as fictional prototype data rather than live supplier tracking. Non-traceable products still have detail pages and clearly state that producer-level provenance is unavailable.
+
+### In-Store Navigator
+
+Open `/in-store-navigator` directly or use “Plan my in-store route” from the cart. The deterministic routing function groups cart products by their shared aisle IDs, orders shelves within each section, and follows FreshWave Riverside's fixed clockwise traversal order from Entrance to Checkout. Unknown and zero-quantity cart lines are ignored, and duplicate product lines are consolidated into one route item.
+
+The responsive schematic floor plan highlights visited sections and the recommended path. After choosing “Start Shopping,” Sarah can mark individual products or entire sections as collected and see route progress. This is explicitly aisle guidance for the prototype—not indoor GPS or live position tracking.
+
+### Consistent demonstration scenario
+
+The current data establishes one reproducible scenario for the demo customer, Sarah:
+
+- Sarah regularly purchases milk, eggs, bananas, chicken, rice, and paper towels.
+- Her pantry has broccoli and chicken that should be used soon, two cartons of milk, available rice, and depleted eggs.
+- FreshWave Riverside has chicken approaching its sell-by date and Honeycrisp apples traceable to the fictional Green Valley Orchard.
+- Every catalog product has a valid aisle and shelf-zone assignment for future store routing.
+
+Freshness and prediction examples use the fixed demonstration date `2026-09-14`, exported from `data/demo-date.ts`. This keeps classroom demonstrations and tests repeatable instead of allowing outcomes to change with the computer's current date.
+
 ## The FreshWave Assistant
 
 FreshWave Assistant is the in-app AI helper at the center of the prototype. It is grounded, on every request, in:
@@ -35,6 +84,21 @@ FreshWave Assistant is the in-app AI helper at the center of the prototype. It i
 - **Zod** for validating both API input and all AI-derived output
 - Local TypeScript/JSON mock data — no database
 
+## Data architecture
+
+The intelligence layer remains deliberately local and explainable:
+
+| Data | Source | Purpose |
+| --- | --- | --- |
+| Products | `data/products.ts` | Prices, stock, dietary tags, freshness, provenance, and store location |
+| Purchase history | `data/purchase-history.ts` | Historical buying intervals for Sarah |
+| Pantry | `data/pantry.ts` | Sarah's explicit at-home quantities and freshness state |
+| Farms | `data/farms.ts` | Clearly fictional producer profiles and coordinates |
+| Store aisles | `data/store-aisles.ts` | Ordered zones and schematic floor-plan geometry |
+| Demo clock | `data/demo-date.ts` | Stable reference date for deterministic demonstrations |
+
+Shared domain contracts are defined in `types/intelligence.ts`, including `PurchaseHistory`, `PantryItem`, `Farm`, `StoreAisle`, `ShoppingRoute`, `RestockPrediction`, and `AntiWasteOffer`. Application code—not Gemini—will remain responsible for prices, discounts, dates, inventory, pantry quantities, predictions, and store routing.
+
 ## Getting started
 
 ```bash
@@ -57,13 +121,29 @@ GEMINI_FALLBACK_MODEL_3=
 
 `GEMINI_API_KEY` is required for the assistant to respond; without it, the rest of the app (browsing, cart, account) still works normally.
 
+## Validation
+
+```bash
+npm run typecheck
+npm run lint
+npm run test:data
+npm run test:anti-waste
+npm run test:smart-fridge
+npm run test:traceability
+npm run test:routing
+npm run build
+```
+
+`test:data` verifies shared-data referential integrity, including unique IDs, valid product/farm/aisle relationships, valid quantities, freshness-field consistency, and the core Sarah demonstration facts.
+
 ## Project structure
 
 ```
 app/            Routes: home/shop, assistant, meal-plan, cart, account, /api/chat
 components/     UI, grouped by domain (assistant, cart, grocery, layout, ui)
-data/           Structured mock data: products, categories, promotions, store, customer
+data/           Shared mock data: catalog, customer, pantry, history, farms, store layout
 lib/            Application logic; lib/ai/ holds the Gemini client, system prompt,
                 model-fallback chain, and structured meal-plan pipeline
-types/          Shared TypeScript types and Zod schemas
+types/          Grocery, intelligence-domain, chat, and meal-plan contracts/schemas
+scripts/        Framework-free integrity and Gemini fallback tests
 ```

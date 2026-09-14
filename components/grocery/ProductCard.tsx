@@ -1,9 +1,13 @@
 "use client";
 
 import { Star } from "lucide-react";
+import Link from "next/link";
+import { MapPin } from "lucide-react";
 import Badge from "@/components/ui/Badge";
 import QuantityStepper from "@/components/ui/QuantityStepper";
 import { useCart } from "@/components/cart/CartProvider";
+import { getAntiWasteOfferForProduct } from "@/lib/anti-waste";
+import { getEffectivePrice } from "@/lib/cart";
 import { getPromotionBadge } from "@/lib/promotions";
 import type { Product } from "@/types/grocery";
 
@@ -22,16 +26,23 @@ export default function ProductCard({ product }: { product: Product }) {
   const quantity = getQuantity(product.id);
   const outOfStock = product.stock <= 0;
 
-  const discountPercent = product.originalPrice
+  const antiWasteOffer = getAntiWasteOfferForProduct(product.id);
+  const effectivePrice = getEffectivePrice(product);
+  const displayOriginalPrice = antiWasteOffer?.normalPrice ?? product.originalPrice;
+  const discountPercent = antiWasteOffer?.discountPercent ?? (product.originalPrice
     ? Math.round(100 - (product.price / product.originalPrice) * 100)
-    : null;
-  const promotion = getPromotionBadge(product.promotion);
+    : null);
+  const promotion = antiWasteOffer
+    ? { label: `Buy soon — ${antiWasteOffer.discountPercent}% off`, tone: "deal" as const }
+    : getPromotionBadge(product.promotion);
   const visibleTags = product.tags.slice(0, 3);
   const hiddenTagCount = product.tags.length - visibleTags.length;
 
   return (
     <div className="flex flex-col rounded-2xl border border-zinc-100 bg-white p-3 shadow-sm">
-      <div
+      <Link
+        href={`/products/${product.id}`}
+        aria-label={`View ${product.name} details`}
         className={`relative flex h-28 items-center justify-center rounded-xl text-5xl ${TINT_CLASSES[product.cardTint]}`}
       >
         {discountPercent ? (
@@ -40,12 +51,15 @@ export default function ProductCard({ product }: { product: Product }) {
           </span>
         ) : null}
         <span aria-hidden>{product.image}</span>
-      </div>
+      </Link>
 
-      {promotion || product.tags.length > 0 ? (
+      {promotion || product.farmId || product.tags.length > 0 ? (
         <div className="mt-2 flex flex-wrap gap-1">
           {promotion ? (
             <Badge tone={promotion.tone}>{promotion.label}</Badge>
+          ) : null}
+          {product.farmId ? (
+            <Badge tone="brand"><MapPin className="h-3 w-3" /> Traceable origin</Badge>
           ) : null}
           {visibleTags.map((tag) => (
             <Badge key={tag} tone="neutral">
@@ -59,7 +73,9 @@ export default function ProductCard({ product }: { product: Product }) {
       ) : null}
 
       <h3 className="mt-2 text-sm font-semibold text-zinc-900">
-        {product.name}
+        <Link href={`/products/${product.id}`} className="hover:text-emerald-700">
+          {product.name}
+        </Link>
       </h3>
       <p className="text-xs text-zinc-500">{product.unit}</p>
 
@@ -70,11 +86,11 @@ export default function ProductCard({ product }: { product: Product }) {
 
       <div className="mt-2 flex items-baseline gap-2">
         <span className="text-lg font-semibold text-zinc-900">
-          ${product.price.toFixed(2)}
+          ${effectivePrice.toFixed(2)}
         </span>
-        {product.originalPrice ? (
+        {displayOriginalPrice ? (
           <span className="text-sm text-zinc-400 line-through">
-            ${product.originalPrice.toFixed(2)}
+            ${displayOriginalPrice.toFixed(2)}
           </span>
         ) : null}
       </div>
@@ -83,6 +99,13 @@ export default function ProductCard({ product }: { product: Product }) {
         <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
         In stock · {product.stock} on shelf
       </p>
+
+      <Link
+        href={`/products/${product.id}`}
+        className="mt-2 text-center text-xs font-semibold text-emerald-700 hover:underline"
+      >
+        View details{product.farmId ? " & origin" : ""}
+      </Link>
 
       {quantity > 0 ? (
         <QuantityStepper

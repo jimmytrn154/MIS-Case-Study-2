@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { promoBanners } from "@/data/promo-banners";
 import type { PromoBanner } from "@/types/grocery";
 
@@ -27,12 +28,20 @@ export default function PromoRow() {
             </h3>
             <p className="mt-1.5 text-sm text-white/85">{promo.description}</p>
           </div>
-          <button
-            type="button"
-            className={`mt-4 w-fit rounded-full px-3 py-1.5 text-xs font-medium ${CTA_CLASSES[promo.tone]}`}
-          >
-            {promo.ctaLabel}
-          </button>
+          {promo.href ? (
+            <Link
+              href={promo.href}
+              className={`mt-4 w-fit rounded-full px-3 py-1.5 text-xs font-medium ${CTA_CLASSES[promo.tone]}`}
+            >
+              {promo.ctaLabel}
+            </Link>
+          ) : (
+            <span
+              className={`mt-4 w-fit rounded-full px-3 py-1.5 text-xs font-medium ${CTA_CLASSES[promo.tone]}`}
+            >
+              {promo.ctaLabel}
+            </span>
+          )}
         </div>
       ))}
     </section>

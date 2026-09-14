@@ -15,6 +15,7 @@ export const promoBanners: PromoBanner[] = [
     description: "Items close to their sell-by date, up to 40% off.",
     ctaLabel: "Browse deals",
     tone: "deal",
+    href: "/deals/anti-waste",
   },
   {
     id: "pickup-30",

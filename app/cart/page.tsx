@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { ShoppingCart, Store } from "lucide-react";
+import Link from "next/link";
+import { MapPinned, ShoppingCart, Store } from "lucide-react";
 import { useCart } from "@/components/cart/CartProvider";
 import QuantityStepper from "@/components/ui/QuantityStepper";
 import ReservePickupModal from "@/components/cart/ReservePickupModal";
@@ -96,6 +97,13 @@ export default function CartPage() {
         <Store className="h-5 w-5 shrink-0" strokeWidth={1.75} />
         Pickup at {currentStore.name} · {currentStore.hoursLabel}
       </div>
+
+      <Link
+        href="/in-store-navigator"
+        className="flex min-h-11 w-full items-center justify-center gap-2 rounded-full border border-sky-200 bg-sky-50 px-5 text-sm font-semibold text-sky-700 hover:bg-sky-100"
+      >
+        <MapPinned className="h-4 w-4" /> Plan my in-store route
+      </Link>
 
       <button
         type="button"

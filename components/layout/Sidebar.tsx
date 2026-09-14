@@ -10,6 +10,8 @@ import {
   Sparkles,
   ListChecks,
   Package,
+  Refrigerator,
+  MapPinned,
   User,
   Waves,
 } from "lucide-react";
@@ -17,13 +19,15 @@ import RewardsSummary from "./RewardsSummary";
 
 const LINKED_ITEMS = [
   { href: "/", label: "Home", icon: Home },
+  { href: "/deals/anti-waste", label: "Smart Anti-Waste Deals", icon: Tag },
+  { href: "/my-kitchen/smart-fridge", label: "Smart Fridge", icon: Refrigerator },
+  { href: "/in-store-navigator", label: "In-Store Navigator", icon: MapPinned },
   { href: "/meal-plan", label: "Recipes & Meal Plans", icon: ChefHat },
   { href: "/account", label: "Your Account", icon: User },
 ];
 
 const SOON_ITEMS = [
   { label: "Shop by Category", icon: LayoutGrid },
-  { label: "Deals & Promotions", icon: Tag },
   { label: "Your Lists", icon: ListChecks },
   { label: "Orders", icon: Package },
 ];
