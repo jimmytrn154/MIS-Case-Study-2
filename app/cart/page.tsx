@@ -6,6 +6,7 @@ import { MapPinned, ShoppingCart, Store } from "lucide-react";
 import { useCart } from "@/components/cart/CartProvider";
 import QuantityStepper from "@/components/ui/QuantityStepper";
 import ReservePickupModal from "@/components/cart/ReservePickupModal";
+import SimulatePurchaseButton from "@/components/cart/SimulatePurchaseButton";
 import { getCartLines, getCartTotals } from "@/lib/cart";
 import { currentStore } from "@/data/store";
 
@@ -116,6 +117,10 @@ export default function CartPage() {
       <p className="text-center text-xs text-zinc-400">
         Demo only — this simulates a reservation, no order is actually placed.
       </p>
+
+      <div className="border-t border-zinc-200 pt-4">
+        <SimulatePurchaseButton />
+      </div>
 
       <ReservePickupModal
         open={isPickupModalOpen}

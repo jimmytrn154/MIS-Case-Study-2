@@ -78,6 +78,13 @@ export interface RestockPrediction {
   confidence: RestockConfidence;
   reason: string;
   pantryAdjusted: boolean;
+  originalDaysUntilRestock?: number;
+  pantrySignal?: "sufficient-stock" | "low-stock" | "depleted";
+}
+
+export interface PantryAwareRestockResult {
+  recommendations: RestockPrediction[];
+  coveredByPantry: RestockPrediction[];
 }
 
 export interface AntiWasteOffer {

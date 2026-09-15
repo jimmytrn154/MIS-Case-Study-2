@@ -1,16 +1,17 @@
 import { BrainCircuit, CalendarClock, ShieldCheck } from "lucide-react";
 import SmartFridgeDashboard from "@/components/kitchen/SmartFridgeDashboard";
+import KitchenTabs from "@/components/kitchen/KitchenTabs";
 import { DEMO_TODAY } from "@/data/demo-date";
 import { products } from "@/data/products";
-import { getRestockPredictions, isLikelyRunningLow } from "@/lib/restock-predictions";
+import { getRestockPredictions } from "@/lib/restock-predictions";
 
 export default function SmartFridgePage() {
   const allPredictions = getRestockPredictions();
-  const likelyRunningLow = allPredictions.filter(isLikelyRunningLow);
 
   return (
     <div className="mx-auto max-w-6xl space-y-6">
-      <section className="rounded-3xl bg-gradient-to-br from-violet-700 to-emerald-600 p-6 text-white sm:p-8">
+      <KitchenTabs />
+      <section className="rounded-3xl bg-gradient-to-br from-violet-700 to-emerald-600 p-5 text-white sm:p-8">
         <div className="flex items-center gap-2 text-violet-50">
           <BrainCircuit className="h-5 w-5" />
           <span className="text-sm font-semibold">My Kitchen · Smart Fridge</span>
@@ -22,7 +23,7 @@ export default function SmartFridgePage() {
         </p>
         <div className="mt-5 flex flex-wrap gap-2 text-xs font-medium">
           <span className="rounded-full bg-white/15 px-3 py-1.5">
-            {likelyRunningLow.length} products approaching restock
+            History + pantry signals
           </span>
           <span className="rounded-full bg-white/15 px-3 py-1.5">
             Demo forecast · {DEMO_TODAY}
@@ -49,7 +50,7 @@ export default function SmartFridgePage() {
         </div>
       </section>
 
-      <SmartFridgeDashboard predictions={likelyRunningLow} catalog={products} />
+      <SmartFridgeDashboard predictions={allPredictions} catalog={products} />
     </div>
   );
 }

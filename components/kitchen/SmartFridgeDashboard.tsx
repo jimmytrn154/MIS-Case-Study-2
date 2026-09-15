@@ -12,7 +12,9 @@ import {
   Trash2,
 } from "lucide-react";
 import { useCart } from "@/components/cart/CartProvider";
+import { usePantry } from "@/components/pantry/PantryProvider";
 import Badge from "@/components/ui/Badge";
+import { adjustRestockPredictionsWithPantry } from "@/lib/pantry-restock-core";
 import type { Product } from "@/types/grocery";
 import type { RestockPrediction } from "@/types/intelligence";
 
@@ -44,12 +46,18 @@ export default function SmartFridgeDashboard({
   catalog: Product[];
 }) {
   const { addItem } = useCart();
+  const { items: pantryItems } = usePantry();
+  const pantryAware = useMemo(
+    () => adjustRestockPredictionsWithPantry(predictions, pantryItems),
+    [predictions, pantryItems],
+  );
+  const recommendations = pantryAware.recommendations;
   const productById = useMemo(
     () => new Map(catalog.map((product) => [product.id, product])),
     [catalog],
   );
   const [selectedIds, setSelectedIds] = useState(
-    () => new Set(predictions.map((prediction) => prediction.productId)),
+    () => new Set(recommendations.map((prediction) => prediction.productId)),
   );
   const [draftLines, setDraftLines] = useState<DraftLine[] | null>(null);
   const [accepted, setAccepted] = useState(false);
@@ -66,7 +74,7 @@ export default function SmartFridgeDashboard({
 
   function prepareDraft() {
     setDraftLines(
-      predictions
+      recommendations
         .filter((prediction) => selectedIds.has(prediction.productId))
         .map((prediction) => ({ productId: prediction.productId, quantity: 1 })),
     );
@@ -101,8 +109,15 @@ export default function SmartFridgeDashboard({
 
   return (
     <div className="space-y-5">
+      <div className="flex flex-wrap items-center gap-2 rounded-2xl border border-violet-100 bg-violet-50 p-4 text-sm text-violet-800">
+        <Sparkles className="h-5 w-5 shrink-0" />
+        <span className="font-medium">
+          Purchase history and Virtual Pantry combined: {recommendations.length} recommended now,
+          {" "}{pantryAware.coveredByPantry.length} avoided because Sarah still has enough.
+        </span>
+      </div>
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
-        {predictions.map((prediction) => {
+        {recommendations.map((prediction) => {
           const product = productById.get(prediction.productId);
           if (!product) return null;
           const selected = selectedIds.has(product.id);
@@ -132,6 +147,11 @@ export default function SmartFridgeDashboard({
                   <Badge tone={CONFIDENCE_TONE[prediction.confidence]}>
                     {prediction.confidence} confidence
                   </Badge>
+                  {prediction.pantrySignal ? (
+                    <Badge tone="info">
+                      {prediction.pantrySignal === "depleted" ? "Pantry empty" : "Pantry running low"}
+                    </Badge>
+                  ) : null}
                 </span>
                 <span className="mt-1 block text-sm font-medium text-emerald-700">
                   {timingLabel(prediction.daysUntilRestock)}
@@ -146,10 +166,31 @@ export default function SmartFridgeDashboard({
         })}
       </div>
 
+      {pantryAware.coveredByPantry.length > 0 ? (
+        <section className="rounded-2xl border border-emerald-100 bg-emerald-50 p-4">
+          <h2 className="text-sm font-semibold text-emerald-900">Covered by your pantry</h2>
+          <p className="mt-1 text-xs text-emerald-700">
+            Historical timing suggested these products, but current home stock prevents an unnecessary immediate restock.
+          </p>
+          <ul className="mt-3 grid gap-2 sm:grid-cols-2">
+            {pantryAware.coveredByPantry.map((prediction) => {
+              const product = productById.get(prediction.productId);
+              return product ? (
+                <li key={product.id} className="flex items-center gap-2 rounded-xl bg-white/80 p-3 text-sm text-zinc-700">
+                  <span aria-hidden>{product.image}</span>
+                  <span className="font-medium">{product.name}</span>
+                  <span className="ml-auto text-xs text-emerald-700">Restock deferred</span>
+                </li>
+              ) : null;
+            })}
+          </ul>
+        </section>
+      ) : null}
+
       <button
         type="button"
         onClick={prepareDraft}
-        disabled={selectedIds.size === 0}
+        disabled={!recommendations.some((prediction) => selectedIds.has(prediction.productId))}
         className="flex min-h-11 w-full items-center justify-center gap-2 rounded-full bg-emerald-600 px-5 py-3 text-sm font-semibold text-white hover:bg-emerald-700 disabled:cursor-not-allowed disabled:bg-zinc-300 sm:w-auto"
       >
         <ShoppingCart className="h-4 w-4" /> Prepare Restock Cart

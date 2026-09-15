@@ -46,6 +46,8 @@ export interface Product {
   farmId?: string;
   harvestDate?: string;
   productionDate?: string;
+  pantryUnit?: string;
+  pantryUnitsPerPurchase?: number;
 }
 
 export interface Store {

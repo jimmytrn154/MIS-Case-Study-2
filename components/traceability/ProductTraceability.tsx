@@ -32,7 +32,7 @@ export default function ProductTraceability({
           <h2 className="mt-2 text-xl font-semibold text-zinc-900">Where this came from</h2>
           <p className="mt-1 text-sm text-zinc-500">Shared FreshWave provenance data for {product.name}.</p>
         </div>
-        <span className="rounded-full bg-amber-50 px-3 py-1 text-xs font-semibold text-amber-700">
+        <span className="max-w-full rounded-full bg-amber-50 px-3 py-1 text-center text-xs font-semibold text-amber-700">
           Fictional demo producer
         </span>
       </div>
@@ -48,12 +48,12 @@ export default function ProductTraceability({
           </div>
           <p className="text-sm leading-6 text-zinc-600">{farm.description}</p>
           <dl className="space-y-2 border-t border-zinc-200 pt-3 text-sm">
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
               <CalendarDays className="h-4 w-4 shrink-0 text-zinc-500" />
               <dt className="capitalize text-zinc-500">{record.originDateType}:</dt>
               <dd className="font-medium text-zinc-900">{formattedDate(record.originDate)}</dd>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
               <Route className="h-4 w-4 shrink-0 text-zinc-500" />
               <dt className="text-zinc-500">Approximate distance:</dt>
               <dd className="font-medium text-zinc-900">{farm.distanceFromStoreKm} km</dd>

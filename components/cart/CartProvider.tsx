@@ -22,6 +22,7 @@ interface CartContextValue {
   removeItem: (productId: string) => void;
   increment: (productId: string) => void;
   decrement: (productId: string) => void;
+  clearCart: () => void;
 }
 
 const CartContext = createContext<CartContextValue | null>(null);
@@ -131,6 +132,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
       removeItem,
       increment,
       decrement,
+      clearCart: () => setItems([]),
     };
   }, [items]);
 

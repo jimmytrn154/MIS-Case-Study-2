@@ -6,6 +6,8 @@ import ChatMessageBubble from "./ChatMessageBubble";
 import MealPlanGroup from "./MealPlanGroup";
 import { mealPlanResponseSchema, type Meal } from "@/types/meal-plan";
 import type { ChatMessage } from "@/types/chat";
+import { useCart } from "@/components/cart/CartProvider";
+import { usePantry } from "@/components/pantry/PantryProvider";
 
 interface DisplayMessage {
   id: string;
@@ -26,7 +28,7 @@ const GREETING: DisplayMessage = {
   id: "greeting",
   role: "assistant",
   content:
-    "Hi, I'm the FreshWave Assistant! Tell me your household size, budget, and any dietary needs, and I'll help you plan meals from what's in stock at Riverside. For example, you can say: 'I have a family of 4, a budget of $100, and we need vegan meals.'",
+    "Hi, I'm the FreshWave Assistant! I can help with Riverside inventory, meal plans, your Virtual Pantry, upcoming restocks, anti-waste deals, local origins, and your cart's aisle route. What would you like to plan?",
 };
 
 function makeId(): string {
@@ -36,6 +38,8 @@ function makeId(): string {
 }
 
 export default function ChatInterface() {
+  const { items: cartItems } = useCart();
+  const { items: pantryItems } = usePantry();
   const [messages, setMessages] = useState<DisplayMessage[]>([GREETING]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -93,7 +97,7 @@ export default function ChatInterface() {
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: trimmed, history }),
+        body: JSON.stringify({ message: trimmed, history, pantryItems, cartItems }),
       });
 
       const data: unknown = await res.json().catch(() => null);

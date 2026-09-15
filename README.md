@@ -18,7 +18,7 @@ The repository now includes the shared data foundation for five connected protot
 
 These capabilities share the existing product catalog through stable `productId` references rather than maintaining isolated mock datasets. Product records now support store aisle and shelf locations plus optional, category-appropriate freshness and provenance fields. Supporting typed datasets cover Sarah's purchase history and pantry, fictional local farms, and the FreshWave Riverside floor plan.
 
-The shared data-model, Smart Anti-Waste Promotions, Smart Fridge, Transparent Local Traceability, and In-Store Navigator milestones are implemented. Virtual Pantry workflows and expanded Gemini context will be added in subsequent milestones.
+The shared data-model and feature milestones through responsive/mobile polish are implemented: Smart Anti-Waste Promotions, Smart Fridge, Transparent Local Traceability, In-Store Navigator, Virtual Pantry, the connected home dashboard, and a single grounded assistant context spanning those capabilities.
 
 ### Smart Anti-Waste Promotions
 
@@ -44,6 +44,28 @@ Open `/in-store-navigator` directly or use “Plan my in-store route” from the
 
 The responsive schematic floor plan highlights visited sections and the recommended path. After choosing “Start Shopping,” Sarah can mark individual products or entire sections as collected and see route progress. This is explicitly aisle guidance for the prototype—not indoor GPS or live position tracking.
 
+### Virtual Pantry
+
+Open `/my-kitchen/pantry` to inspect Sarah's at-home inventory. Expiration state is recalculated in application code: zero quantity is low stock, past dates are expired, dates within three days are Use Soon, and remaining items are classified by their stored low-stock threshold. The cart's “Simulate completed purchase” action explicitly converts confirmed demo cart quantities into new pantry batches, applies structured package-to-pantry unit conversions where needed, and then clears the cart; it does not represent a real payment or order.
+
+“Cook with what I have” sends Gemini only the current, non-expired pantry products, quantities, units, statuses, and dates, with Use Soon items first. Application code rejects unknown product IDs, caps every suggested consumption amount to the available quantity, and supplies product names and units from structured FreshWave data. “Mark as Cooked” shows a confirmation list before deducting quantities, never permits a negative result, and moves depleted items into Upcoming Restock. Restock items enter the cart only after the customer selects “Add to cart.”
+
+### Cross-feature integration
+
+Smart Fridge recommendations now combine historical purchase timing with the current Virtual Pantry. Sufficient home stock suppresses an otherwise near-term recommendation, while depleted or threshold-level stock promotes a product to “needed now.” In Sarah's demo, two milk cartons defer the historical milk recommendation, empty eggs remain urgent, and low paper-towel stock advances its forecast. The original behavioral calculation remains visible and the pantry adjustment is deterministic.
+
+Pantry recipes also check structured anti-waste offers after Gemini returns. If a recipe would finish an ingredient that currently has a store anti-waste deal, the application—not Gemini—shows the verified discount and price and lets Sarah add it to the cart. The home page summarizes restock, pantry-expiry, personalized anti-waste, cart-route, and local-origin signals in compact cards linking to their source features.
+
+### Gemini intelligence context
+
+Every main-assistant request now carries the current browser pantry and cart state to the server. Server-side application code validates those records against Sarah and the FreshWave catalog, recalculates pantry freshness, combines pantry state with historical restock predictions, computes deterministic anti-waste offers, resolves fictional producer relationships, and builds the current cart's aisle route. Gemini receives the resulting structured context; it does not perform those business calculations.
+
+The system prompt explicitly prohibits invented pantry quantities, expiry or origin dates, farms, discounts, aisle locations, and indoor positioning. The assistant may explain verified results, personalize suggestions, generate recipes, and suggest catalog-grounded alternatives, while application logic remains authoritative for prices, discounts, inventory, dates, pantry state, predictions, and routing. The dedicated pantry-recipe prompt follows the same boundary.
+
+### Responsive and mobile behavior
+
+The five intelligence feature surfaces are verified at 390px, 430px, tablet, and desktop widths. Pantry and restock actions expand on narrow screens, dense navigator rows wrap without hiding shelf details, provenance metadata remains readable, SVG farm and store maps scale to their containers, and modal content stays scrollable within short mobile viewports. Interactive controls use touch-friendly targets and the application prevents page-level horizontal overflow.
+
 ### Consistent demonstration scenario
 
 The current data establishes one reproducible scenario for the demo customer, Sarah:
@@ -62,6 +84,10 @@ FreshWave Assistant is the in-app AI helper at the center of the prototype. It i
 - the selected store's live inventory (product, price, current stock)
 - active promotions (percentage discounts, member deals, sell-by deals)
 - the demo customer's profile (household size, budget habits, dietary restrictions, loyalty status)
+- current Virtual Pantry quantities and application-calculated freshness states
+- pantry-aware restock recommendations and predictions currently covered by home stock
+- deterministic anti-waste offers and fictional local-producer provenance
+- the current cart's schematic aisle route
 
 **What it can do:**
 
@@ -131,6 +157,9 @@ npm run test:anti-waste
 npm run test:smart-fridge
 npm run test:traceability
 npm run test:routing
+npm run test:pantry
+npm run test:cross-feature
+npm run test:assistant-context
 npm run build
 ```
 

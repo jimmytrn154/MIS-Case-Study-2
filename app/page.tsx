@@ -7,6 +7,7 @@ import AssistantPanel from "@/components/assistant/AssistantPanel";
 import CartSummaryPanel from "@/components/cart/CartSummaryPanel";
 import { categories } from "@/data/categories";
 import { products } from "@/data/products";
+import IntelligenceOverview from "@/components/home/IntelligenceOverview";
 
 export default function HomePage() {
   return (
@@ -14,6 +15,7 @@ export default function HomePage() {
       <div className="min-w-0 flex-1 space-y-6">
         <Greeting />
         <HeroBanner />
+        <IntelligenceOverview />
         <div className="xl:hidden">
           <QuickActions variant="grid" />
         </div>

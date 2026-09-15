@@ -132,7 +132,7 @@ export default function InStoreNavigator({
             const sectionComplete = stop.productIds.every((id) => collectedProductIds.has(id));
             return (
               <li key={stop.aisleId} className={`rounded-xl border p-3 ${sectionComplete ? "border-emerald-200 bg-emerald-50" : "border-zinc-100"}`}>
-                <div className="flex items-center gap-2">
+                <div className="flex flex-wrap items-center gap-2">
                   <span className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-xs font-bold text-white ${sectionComplete ? "bg-emerald-600" : "bg-violet-600"}`}>
                     {sectionComplete ? <Check className="h-4 w-4" /> : index + 1}
                   </span>
@@ -144,7 +144,7 @@ export default function InStoreNavigator({
                     <button
                       type="button"
                       onClick={() => toggleSection(stop.productIds)}
-                      className="min-h-11 rounded-full px-3 text-xs font-semibold text-emerald-700 hover:bg-emerald-100"
+                      className="min-h-11 w-full rounded-full px-3 text-xs font-semibold text-emerald-700 hover:bg-emerald-100 min-[430px]:w-auto"
                     >
                       {sectionComplete ? "Undo section" : "Collect section"}
                     </button>
@@ -169,10 +169,10 @@ export default function InStoreNavigator({
                             <Circle className="h-5 w-5 shrink-0 text-zinc-300" />
                           )}
                           <span aria-hidden>{product.image}</span>
-                          <span className={collected ? "text-zinc-400 line-through" : "text-zinc-700"}>
+                          <span className={`min-w-0 flex-1 break-words ${collected ? "text-zinc-400 line-through" : "text-zinc-700"}`}>
                             {product.name}
                           </span>
-                          <span className="ml-auto shrink-0 text-xs text-zinc-400">{product.storeLocation.shelfZone}</span>
+                          <span className="max-w-24 shrink-0 text-right text-xs text-zinc-400">{product.storeLocation.shelfZone}</span>
                         </button>
                       </li>
                     );

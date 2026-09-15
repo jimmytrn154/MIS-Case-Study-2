@@ -20,6 +20,8 @@ export const products: Product[] = [
     sellByDate: "2026-09-15",
     farmId: "sunrise-fields",
     harvestDate: "2026-09-12",
+    pantryUnit: "lb",
+    pantryUnitsPerPurchase: 1,
   },
   {
     id: "spinach",
@@ -39,6 +41,8 @@ export const products: Product[] = [
     sellByDate: "2026-09-17",
     farmId: "sunrise-fields",
     harvestDate: "2026-09-12",
+    pantryUnit: "clamshell",
+    pantryUnitsPerPurchase: 1,
   },
   {
     id: "roma-tomatoes",
@@ -185,6 +189,8 @@ export const products: Product[] = [
     expirationDate: "2026-09-20",
     farmId: "meadowbrook-farm",
     productionDate: "2026-09-08",
+    pantryUnit: "eggs",
+    pantryUnitsPerPurchase: 12,
   },
   {
     id: "whole-milk",
@@ -203,6 +209,8 @@ export const products: Product[] = [
     storeLocation: { aisleId: "dairy-eggs", shelfZone: "D1" },
     isPerishable: true,
     expirationDate: "2026-09-17",
+    pantryUnit: "cartons",
+    pantryUnitsPerPurchase: 1,
   },
   {
     id: "unsalted-butter",
@@ -274,6 +282,8 @@ export const products: Product[] = [
     sellByDate: "2026-09-15",
     farmId: "meadowbrook-farm",
     productionDate: "2026-09-11",
+    pantryUnit: "lb",
+    pantryUnitsPerPurchase: 1,
   },
   {
     id: "ground-beef",
@@ -442,6 +452,8 @@ export const products: Product[] = [
     rating: 4.6,
     reviewCount: 180,
     storeLocation: { aisleId: "pantry", shelfZone: "A4" },
+    pantryUnit: "g",
+    pantryUnitsPerPurchase: 907,
   },
   {
     id: "black-beans",
@@ -652,6 +664,8 @@ export const products: Product[] = [
     rating: 4.5,
     reviewCount: 210,
     storeLocation: { aisleId: "household", shelfZone: "H3" },
+    pantryUnit: "rolls",
+    pantryUnitsPerPurchase: 6,
   },
   {
     id: "dish-soap",

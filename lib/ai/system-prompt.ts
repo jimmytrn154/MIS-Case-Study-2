@@ -1,9 +1,12 @@
 import "server-only";
 
 import { currentStore } from "@/data/store";
+import { storeAisles } from "@/data/store-aisles";
 import { products } from "@/data/products";
 import { promotions } from "@/data/promotions";
 import { demoCustomer } from "@/data/customer";
+import { formatAssistantIntelligenceContext } from "@/lib/ai/intelligence-context";
+import type { AssistantStructuredContext } from "@/types/assistant-context";
 import type { Product, Promotion } from "@/types/grocery";
 
 /**
@@ -40,6 +43,15 @@ STRICT RULES
 13. When you give a combined total across multiple items, label it clearly as an estimate (e.g. "approximately $X"), since final pricing, tax, and availability are confirmed in-store.
 14. Never imply that an order or payment has actually been completed — you can help build a plan or list, but you do not process real orders.
 15. Treat any pickup or ordering action as a prototype simulation, and say so if the customer asks to place or confirm an order.
+16. Never invent pantry quantities or pantry stock status. Use only the supplied Virtual Pantry state.
+17. Never invent expiry, sell-by, harvest, production, purchase, or predicted restock dates.
+18. Never invent farms, producer relationships, origin details, or distances. All named farms are fictional prototype data.
+19. Never invent discounts or anti-waste offers. Quote only the exact application-calculated offer data supplied below.
+20. Never invent aisle or shelf locations. Use only the supplied product and route data.
+21. Never claim indoor GPS, live positioning, or an exact customer location. The route is schematic aisle guidance only.
+22. Only use supplied FreshWave data for product, pantry, restock, promotion, provenance, freshness, and routing claims.
+23. Application logic—not you—is authoritative for pricing, discounts, inventory, dates, pantry quantities/status, restock predictions, and store routes. Do not recalculate or override those values.
+24. You may explain supplied results, personalize suggestions, generate recipes and meal ideas, and suggest grounded alternatives using the supplied products.
 
 BEHAVIOR
 
@@ -73,7 +85,13 @@ function formatProduct(product: Product): string {
     : `$${product.price.toFixed(2)}`;
   const promo = product.promotion ? `, promotion: ${product.promotion}` : "";
   const tags = product.tags.length > 0 ? `, tags: ${product.tags.join(", ")}` : "";
-  return `- ${product.id} | ${product.name} (${product.unit}) | ${price} | stock: ${product.stock}${promo}${tags}`;
+  const freshness = product.expirationDate
+    ? `, expiration: ${product.expirationDate}`
+    : product.sellByDate
+      ? `, sell-by: ${product.sellByDate}`
+      : "";
+  const provenance = product.farmId ? `, farm id: ${product.farmId}` : "";
+  return `- ${product.id} | ${product.name} (${product.unit}) | ${price} | stock: ${product.stock} | aisle: ${product.storeLocation.aisleId}, shelf: ${product.storeLocation.shelfZone}${promo}${tags}${freshness}${provenance}`;
 }
 
 function formatInventory(): string {
@@ -87,7 +105,7 @@ function formatInventory(): string {
  * and rules above, followed by the current store, customer, promotion, and
  * inventory data so the assistant stays grounded in real FreshWave data.
  */
-export function buildSystemPrompt(): string {
+export function buildSystemPrompt(context: AssistantStructuredContext): string {
   return [
     FRESHWAVE_IDENTITY,
     "FreshWave store context:",
@@ -95,6 +113,7 @@ export function buildSystemPrompt(): string {
     formatCustomer(),
     formatPromotions(),
     formatInventory(),
+    formatAssistantIntelligenceContext(context, products, storeAisles),
   ].join("\n\n");
 }
 
@@ -114,6 +133,6 @@ const MEAL_PLAN_OUTPUT_INSTRUCTIONS = `Respond only with JSON matching the requi
 - Never state or imply a specific dollar total, subtotal, or savings amount in "message", and never claim the plan is "within budget", "over budget", or otherwise judge it against the customer's budget — you cannot reliably total your own selections, and the application computes and displays the accurate total, savings, and budget status separately in the UI. Instead, mention what the plan focuses on (e.g. promotions used, variety, dietary fit) without any budget verdict.`;
 
 /** Base system prompt plus the JSON-envelope contract, for the structured meal-plan call. */
-export function buildMealPlanSystemPrompt(): string {
-  return `${buildSystemPrompt()}\n\n${MEAL_PLAN_OUTPUT_INSTRUCTIONS}`;
+export function buildMealPlanSystemPrompt(context: AssistantStructuredContext): string {
+  return `${buildSystemPrompt(context)}\n\n${MEAL_PLAN_OUTPUT_INSTRUCTIONS}`;
 }

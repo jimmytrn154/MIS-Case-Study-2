@@ -7,7 +7,7 @@ import { currentStore } from "@/data/store";
 export default function InStoreNavigatorPage() {
   return (
     <div className="mx-auto max-w-6xl space-y-6">
-      <section className="rounded-3xl bg-gradient-to-br from-sky-700 to-emerald-600 p-6 text-white sm:p-8">
+      <section className="rounded-3xl bg-gradient-to-br from-sky-700 to-emerald-600 p-5 text-white sm:p-8">
         <div className="flex items-center gap-2 text-sky-50">
           <MapPinned className="h-5 w-5" />
           <span className="text-sm font-semibold">FreshWave Riverside</span>

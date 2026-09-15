@@ -10,7 +10,7 @@ export default function AntiWasteDealsPage() {
 
   return (
     <div className="mx-auto max-w-6xl space-y-6">
-      <section className="overflow-hidden rounded-3xl bg-gradient-to-br from-emerald-700 to-emerald-500 p-6 text-white sm:p-8">
+      <section className="overflow-hidden rounded-3xl bg-gradient-to-br from-emerald-700 to-emerald-500 p-5 text-white sm:p-8">
         <div className="flex items-center gap-2 text-emerald-50">
           <Leaf className="h-5 w-5" />
           <span className="text-sm font-semibold">Smart Anti-Waste Deals</span>

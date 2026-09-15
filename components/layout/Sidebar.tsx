@@ -12,6 +12,7 @@ import {
   Package,
   Refrigerator,
   MapPinned,
+  Warehouse,
   User,
   Waves,
 } from "lucide-react";
@@ -21,6 +22,7 @@ const LINKED_ITEMS = [
   { href: "/", label: "Home", icon: Home },
   { href: "/deals/anti-waste", label: "Smart Anti-Waste Deals", icon: Tag },
   { href: "/my-kitchen/smart-fridge", label: "Smart Fridge", icon: Refrigerator },
+  { href: "/my-kitchen/pantry", label: "Virtual Pantry", icon: Warehouse },
   { href: "/in-store-navigator", label: "In-Store Navigator", icon: MapPinned },
   { href: "/meal-plan", label: "Recipes & Meal Plans", icon: ChefHat },
   { href: "/account", label: "Your Account", icon: User },

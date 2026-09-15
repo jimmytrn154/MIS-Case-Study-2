@@ -13,6 +13,7 @@ import {
   type MealIngredient,
 } from "@/types/meal-plan";
 import type { ChatMessage } from "@/types/chat";
+import type { AssistantStructuredContext } from "@/types/assistant-context";
 
 /**
  * The shape we ask Gemini to produce. Deliberately excludes price/cost
@@ -147,12 +148,13 @@ export function resolveMealPlan(raw: RawEnvelope): MealPlanResponse {
 async function requestEnvelope(
   message: string,
   history: ChatMessage[],
+  context: AssistantStructuredContext,
 ): Promise<RawEnvelope | null> {
   try {
     const raw = await generateStructuredReply(
       message,
       history,
-      buildMealPlanSystemPrompt(),
+      buildMealPlanSystemPrompt(context),
       toGeminiJsonSchema(),
     );
     const parsed: unknown = JSON.parse(raw);
@@ -171,14 +173,15 @@ async function requestEnvelope(
 export async function generateAssistantReply(
   message: string,
   history: ChatMessage[],
+  context: AssistantStructuredContext,
 ): Promise<MealPlanResponse> {
-  let envelope = await requestEnvelope(message, history);
+  let envelope = await requestEnvelope(message, history, context);
   if (!envelope) {
-    envelope = await requestEnvelope(message, history);
+    envelope = await requestEnvelope(message, history, context);
   }
 
   if (!envelope) {
-    const text = await generateChatReply(message, history, buildSystemPrompt());
+    const text = await generateChatReply(message, history, buildSystemPrompt(context));
     envelope = { message: text, mealPlan: [] };
   }
 

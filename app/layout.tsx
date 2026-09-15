@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import AppShell from "@/components/layout/AppShell";
 import { CartProvider } from "@/components/cart/CartProvider";
+import { PantryProvider } from "@/components/pantry/PantryProvider";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -29,7 +30,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     >
       <body className="min-h-full bg-zinc-50 text-zinc-900">
         <CartProvider>
-          <AppShell>{children}</AppShell>
+          <PantryProvider>
+            <AppShell>{children}</AppShell>
+          </PantryProvider>
         </CartProvider>
         <Analytics />
       </body>

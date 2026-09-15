@@ -12,7 +12,10 @@
     "test:anti-waste": "node scripts/test-anti-waste.ts",
     "test:smart-fridge": "node scripts/test-restock-prediction.ts",
     "test:traceability": "node scripts/test-traceability.ts",
-    "test:routing": "node scripts/test-store-routing.ts"
+    "test:routing": "node scripts/test-store-routing.ts",
+    "test:pantry": "node scripts/test-pantry.ts",
+    "test:cross-feature": "node scripts/test-cross-feature.ts",
+    "test:assistant-context": "node scripts/test-assistant-context.ts"
   },
   "dependencies": {
     "@google/genai": "^2.21.0",
