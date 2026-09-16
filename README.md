@@ -1,10 +1,39 @@
 # FreshWave
 
-FreshWave is a fictional mid-sized regional grocery chain. This repository is a university prototype for **FreshWave Assistant**, an AI-driven customer-facing platform that connects a selected store's live inventory, promotions, and a customer's own preferences into personalized meal plans and a ready-to-checkout shopping cart.
+FreshWave is a fictional mid-sized regional grocery chain. This repository is a university prototype of its connected grocery experience: product discovery, deterministic retail intelligence, pantry and cart workflows, and **FreshWave Assistant**, an AI grocery and meal-planning helper.
 
-The prototype demonstrates how a physical-store grocery chain could combine its existing strengths (local inventory, in-store pickup) with AI-driven digital convenience — without inventing a fictional catalog the AI can hallucinate freely against. Every price, stock count, and promotion the assistant references comes from structured mock data in this repo, not from the model.
+The application combines FreshWave Riverside's structured mock inventory and promotions with a demo customer's preferences, purchase history, pantry, and cart. Gemini can explain this supplied context and generate grounded meal ideas, but it is never the source of truth for products, prices, discounts, quantities, dates, provenance, predictions, or store routes.
 
-This is a polished course prototype, not production software — there is no real backend, database, authentication, or payment processing.
+This is a polished course prototype, not production retail software. There is no real retailer integration, backend database, authentication, payment processing, indoor positioning, or completed order fulfillment. Cart, pickup, purchase, supplier, and location experiences are explicitly simulated.
+
+## Product identities and boundaries
+
+| Identity | Current role |
+| --- | --- |
+| **FreshWave** | The fictional regional grocery brand represented by the application. |
+| **FreshWave Riverside** | The selected fictional demo store at 1450 Riverside Ave, with structured inventory, hours, aisles, shelves, freshness dates, and coordinates. |
+| **Sarah** | The fixed demo customer: household of two, member since 2024, budget-conscious and high-protein preferences, a no-pork restriction, purchase history, loyalty data, and a Virtual Pantry. |
+| **FreshWave Assistant** | A concise, practical AI shopping associate that answers grocery questions, creates grounded recipes and meal plans, explains supplied intelligence, and suggests available alternatives. |
+| **FreshWave application logic** | The authoritative layer for inventory, prices, totals, discounts, dates, pantry mutations, restock predictions, traceability relationships, and aisle routing. |
+| **Gemini** | A server-side language model used for conversation and generation only; its structured output is validated before the UI accepts it. |
+
+All stores, customers, farms, inventory, purchases, pantry records, prices, and promotions in this repository are fictional demonstration data.
+
+## Core application experience
+
+| Route | Capability |
+| --- | --- |
+| `/` | Browse and filter the 42-product catalog, review promotional panels and cart context, and open dashboard cards for pantry expiry, restocks, anti-waste offers, cart routing, and local provenance. |
+| `/products/[id]` | Review product availability, effective price, shelf location, cart actions, and traceability when producer data exists. |
+| `/assistant` | Chat with FreshWave Assistant, generate validated meal plans, consolidate shopping lists, and add plans to the shared cart. |
+| `/cart` | Adjust quantities, retain verified promotional pricing, simulate pickup, convert a confirmed demo cart into pantry batches, or plan an aisle route. |
+| `/deals/anti-waste` | Browse deterministic freshness markdowns, with frequent purchases ranked as personalized offers. |
+| `/my-kitchen/smart-fridge` | Review purchase-history predictions adjusted by current pantry stock before confirming a proposed restock cart. |
+| `/my-kitchen/pantry` | Track at-home quantities and expiry status, generate pantry-grounded recipes, deduct cooked ingredients, and confirm restocks. |
+| `/in-store-navigator` | Turn the cart into a deterministic Riverside aisle sequence and mark products or sections as collected. |
+| `/account` | View Sarah's fictional profile, preferences, restriction, loyalty summary, and selected store. |
+
+The standalone `/meal-plan` route remains a placeholder; generated meal plans currently render inside the `/assistant` conversation, where they can be reviewed and added to the cart.
 
 ## FreshWave Intelligence Layer
 
@@ -30,7 +59,7 @@ Sarah's purchase history also affects ordering without changing eligibility or p
 
 Open `/my-kitchen/smart-fridge` to see products Sarah is likely to need within seven days. For each repeatedly purchased product, application code averages the days between purchases, adds that interval to the most recent purchase date, and compares the prediction with the fixed demo date. Confidence is derived from the number of observations and how much the historical intervals vary; it is not presented as a trained AI forecast.
 
-Sarah can select predictions and prepare a proposed restock cart. The proposal supports removal and quantity changes, and the shared cart is modified only after explicit confirmation. Pantry-aware prediction adjustments are intentionally deferred until the Virtual Pantry and cross-feature integration milestones.
+Sarah can select predictions and prepare a proposed restock cart. The proposal supports removal and quantity changes, and the shared cart is modified only after explicit confirmation. Before recommendations are shown, current pantry quantities can suppress unnecessary purchases or promote depleted and low-stock products to “needed now.”
 
 ### Transparent Local Traceability
 
@@ -73,7 +102,7 @@ The current data establishes one reproducible scenario for the demo customer, Sa
 - Sarah regularly purchases milk, eggs, bananas, chicken, rice, and paper towels.
 - Her pantry has broccoli and chicken that should be used soon, two cartons of milk, available rice, and depleted eggs.
 - FreshWave Riverside has chicken approaching its sell-by date and Honeycrisp apples traceable to the fictional Green Valley Orchard.
-- Every catalog product has a valid aisle and shelf-zone assignment for future store routing.
+- Every catalog product has a valid aisle and shelf-zone assignment used by the current In-Store Navigator.
 
 Freshness and prediction examples use the fixed demonstration date `2026-09-14`, exported from `data/demo-date.ts`. This keeps classroom demonstrations and tests repeatable instead of allowing outcomes to change with the computer's current date.
 
@@ -81,9 +110,9 @@ Freshness and prediction examples use the fixed demonstration date `2026-09-14`,
 
 FreshWave Assistant is the in-app AI helper at the center of the prototype. It is grounded, on every request, in:
 
-- the selected store's live inventory (product, price, current stock)
+- FreshWave Riverside's structured demo inventory (product, price, current stock)
 - active promotions (percentage discounts, member deals, sell-by deals)
-- the demo customer's profile (household size, budget habits, dietary restrictions, loyalty status)
+- the demo customer's profile (household size, preferences, dietary restrictions, loyalty status)
 - current Virtual Pantry quantities and application-calculated freshness states
 - pantry-aware restock recommendations and predictions currently covered by home stock
 - deterministic anti-waste offers and fictional local-producer provenance
@@ -91,14 +120,14 @@ FreshWave Assistant is the in-app AI helper at the center of the prototype. It i
 
 **What it can do:**
 
-- **Have an ordinary conversation** about products, deals, and general shopping questions, grounded strictly in the store's real inventory and promotions — it will say a product isn't available rather than invent one, and it will never invent a price.
-- **Generate a personalized, structured meal plan** on request (e.g. "Plan five dinners for two people under $60, no pork") — a day-by-day plan built entirely from real FreshWave products, respecting the customer's dietary restrictions and stated budget.
-- **Price every meal plan using application code, not the model.** The AI decides *what* to cook and how much of each product to buy; this app looks up the real product prices and stock, computes every line cost, meal cost, total, and savings figure itself, and drops any product the model gets wrong (an unknown ID, an out-of-stock item) rather than trusting it blindly.
-- **Turn a meal plan into a shopping list and cart.** Duplicate ingredients across meals are consolidated (e.g. chicken breast needed on two different days merges into one line), quantities are capped to real stock, and the consolidated list can be added to the cart in one action.
+- **Have an ordinary conversation** about products, deals, pantry state, restocks, origins, routes, and general shopping questions, grounded strictly in supplied FreshWave data—it will say information is unavailable rather than inventing it.
+- **Generate a personalized, structured meal plan** on request (e.g. "Plan five dinners for two people under $60, no pork")—a day-by-day plan built entirely from supplied catalog products, respecting the customer's dietary restrictions and stated budget.
+- **Price every meal plan using application code, not the model.** The AI decides *what* to cook and how much of each product to buy; the app looks up structured catalog prices and stock, computes every line cost, meal cost, total, and savings figure itself, and drops any product the model gets wrong rather than trusting it blindly.
+- **Turn a meal plan into a shopping list and cart.** Duplicate ingredients across meals are consolidated, quantities are capped to catalog stock, and the consolidated list can be added to the cart in one action.
 - **Simulate a store pickup reservation** — a clearly-labeled prototype confirmation, not a real order.
 - **Stay available under transient failures.** Requests fall back across a configurable chain of Gemini models (rate limits, timeouts, and server errors move to the next model; configuration or auth errors fail immediately rather than masking a real problem).
 
-**How it stays grounded:** the assistant's system prompt — its identity, strict grounding rules, and behavior contract — lives in its own dedicated file, [`lib/ai/system-prompt.ts`](lib/ai/system-prompt.ts), along with the logic that injects live store, inventory, promotion, and customer data into every request. All structured output from the model is validated with Zod before the app ever trusts or renders it.
+**How it stays grounded:** the assistant's system prompt—its identity, strict grounding rules, and behavior contract—lives in [`lib/ai/system-prompt.ts`](lib/ai/system-prompt.ts). Each request receives structured store, inventory, promotion, customer, pantry, restock, anti-waste, provenance, and route context assembled by application code. Zod validates request and AI response shapes, and application resolvers reject unknown products, cap quantities to stock or pantry availability, and calculate all displayed monetary values.
 
 **Where it lives:** the chat interface is at `/assistant`; generated meal plans render as cards inline in that same conversation, with a shopping-list summary and an "Add meal plan to cart" action.
 
@@ -108,7 +137,7 @@ FreshWave Assistant is the in-app AI helper at the center of the prototype. It i
 - **Tailwind CSS**
 - **Gemini API** (`@google/genai`), called only from server-side code
 - **Zod** for validating both API input and all AI-derived output
-- Local TypeScript/JSON mock data — no database
+- Typed local TypeScript mock data and browser `localStorage` — no database
 
 ## Data architecture
 
@@ -117,13 +146,18 @@ The intelligence layer remains deliberately local and explainable:
 | Data | Source | Purpose |
 | --- | --- | --- |
 | Products | `data/products.ts` | Prices, stock, dietary tags, freshness, provenance, and store location |
+| Promotions | `data/promotions.ts` | Catalog promotion identities and labels |
+| Customer | `data/customer.ts` | Sarah's household, preferences, restriction, and loyalty context |
+| Store | `data/store.ts` | Selected Riverside identity, address, hours, and schematic coordinates |
 | Purchase history | `data/purchase-history.ts` | Historical buying intervals for Sarah |
 | Pantry | `data/pantry.ts` | Sarah's explicit at-home quantities and freshness state |
 | Farms | `data/farms.ts` | Clearly fictional producer profiles and coordinates |
 | Store aisles | `data/store-aisles.ts` | Ordered zones and schematic floor-plan geometry |
 | Demo clock | `data/demo-date.ts` | Stable reference date for deterministic demonstrations |
 
-Shared domain contracts are defined in `types/intelligence.ts`, including `PurchaseHistory`, `PantryItem`, `Farm`, `StoreAisle`, `ShoppingRoute`, `RestockPrediction`, and `AntiWasteOffer`. Application code—not Gemini—will remain responsible for prices, discounts, dates, inventory, pantry quantities, predictions, and store routing.
+Shared domain contracts are defined in `types/intelligence.ts`, including `PurchaseHistory`, `PantryItem`, `Farm`, `StoreAisle`, `ShoppingRoute`, `RestockPrediction`, and `AntiWasteOffer`. Application code—not Gemini—is responsible for prices, discounts, dates, inventory, pantry quantities, predictions, and store routing.
+
+The shared cart, Virtual Pantry, and assistant conversation persist in browser `localStorage`. They are local prototype state, not synchronized customer records. Removing the site's browser storage restores the seeded demonstration state on the next visit.
 
 ## Getting started
 
@@ -147,6 +181,8 @@ GEMINI_FALLBACK_MODEL_3=
 
 `GEMINI_API_KEY` is required for the assistant to respond; without it, the rest of the app (browsing, cart, account) still works normally.
 
+For a reliable walkthrough, begin at `/`, use the seeded Sarah scenario, and treat every pickup, completed-purchase, farm, and route interaction as a simulation. The app's deterministic intelligence features do not require Gemini; only assistant conversation and pantry-recipe generation call the API.
+
 ## Validation
 
 ```bash
@@ -163,16 +199,18 @@ npm run test:assistant-context
 npm run build
 ```
 
-`test:data` verifies shared-data referential integrity, including unique IDs, valid product/farm/aisle relationships, valid quantities, freshness-field consistency, and the core Sarah demonstration facts.
+The framework-free test scripts cover shared-data referential integrity, anti-waste pricing, restock prediction, traceability, routing, pantry mutation, cross-feature pantry/restock behavior, and the structured assistant context. `test:data` additionally verifies unique IDs, valid product/farm/aisle relationships, freshness-field consistency, and the core Sarah demonstration facts.
 
 ## Project structure
 
 ```
-app/            Routes: home/shop, assistant, meal-plan, cart, account, /api/chat
-components/     UI, grouped by domain (assistant, cart, grocery, layout, ui)
+app/            App Router pages plus server-only chat and pantry-recipe endpoints
+components/     UI grouped by assistant, cart, deals, grocery, home, kitchen,
+                navigator, pantry, traceability, layout, and shared controls
 data/           Shared mock data: catalog, customer, pantry, history, farms, store layout
-lib/            Application logic; lib/ai/ holds the Gemini client, system prompt,
-                model-fallback chain, and structured meal-plan pipeline
-types/          Grocery, intelligence-domain, chat, and meal-plan contracts/schemas
-scripts/        Framework-free integrity and Gemini fallback tests
+lib/            Deterministic pricing, prediction, pantry, provenance, and routing logic;
+                lib/ai/ contains the Gemini client, prompts, context, and response pipeline
+types/          Grocery, intelligence, assistant-context, chat, pantry-recipe,
+                and meal-plan contracts/schemas
+scripts/        Framework-free data, feature-logic, integration, and grounding tests
 ```
